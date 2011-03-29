@@ -1,4 +1,4 @@
-<project name="T2" basedir=".">
+<project name="Dobby" basedir=".">
     <target name="help">
         <echo>Dobby Build Commands ${line.separator}</echo>
         <echo>help: Get this list ${line.separator}</echo>
