@@ -4,7 +4,7 @@
     <delete dir="build"/>
   </target>
   
-  <target name="compile" depends="compile-native">
+  <target name="compile">
     <mkdir dir="build/classes"/>
     <javac srcdir="src" destdir="build/classes"/>
   </target>
@@ -20,7 +20,7 @@
     <echo>help: Get this list ${line.separator}</echo>
     <echo>compile: Compile the project ${line.separator}</echo> 
     <echo>clean: clear the compiled class files ${line.separator}</echo>
-    <echo>jar: create a jar with the compiled classes ${line.separator} <echo>
+    <echo>jar: create a jar with the compiled classes ${line.separator} </echo>
   </target>
   
 </project>
