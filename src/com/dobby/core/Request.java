@@ -2,6 +2,11 @@ package com.dobby.core;
 
 import java.util.Vector;
 
+/**
+ * A representation of a request for a change, complete with the state of the 
+ * system when the request is made
+ * @author anand
+ */
 public abstract class Request {
 	protected String user;
 	protected Vector<Integer> stateVector;
@@ -57,6 +62,17 @@ public abstract class Request {
 		this.character = character;
 	}
 	
+	/**
+	 * Transforms this request relative to a competing request
+	 * @param r
+	 * @return new Request, this transformed with respect to r
+	 */
 	public abstract Request transform(Request r);
 	
+	/**
+	 * Applies this change to the target string
+	 * @param target
+	 * @return the modified target
+	 */
+	public abstract String apply(String target);
 }
