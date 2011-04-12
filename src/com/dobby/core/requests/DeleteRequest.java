@@ -1,8 +1,7 @@
 package com.dobby.core.requests;
 
-import java.util.Vector;
-
 import com.dobby.core.Request;
+import com.dobby.core.StateVector;
 
 /**
  * A request for the delete of a character at a position
@@ -20,7 +19,7 @@ public class DeleteRequest extends Request {
 	 * @param position
 	 * @param character
 	 */
-	public DeleteRequest(String user, Vector<Integer> stateVector,
+	public DeleteRequest(String user, StateVector stateVector,
 			int serialNumber, int position, char character) {
 		super(user, stateVector, serialNumber, position, character);
 	}

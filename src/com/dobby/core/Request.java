@@ -1,6 +1,5 @@
 package com.dobby.core;
 
-import java.util.Vector;
 
 /**
  * A representation of a request for a change, complete with the state of the 
@@ -9,7 +8,7 @@ import java.util.Vector;
  */
 public abstract class Request {
 	protected String user;
-	protected Vector<Integer> stateVector;
+	protected StateVector stateVector;
 	protected int serialNumber;
 	protected int position;
 	protected char character;
@@ -21,7 +20,7 @@ public abstract class Request {
 	 * @param position
 	 * @param character
 	 */
-	public Request(String user, Vector<Integer> stateVector, int serialNumber,
+	public Request(String user, StateVector stateVector, int serialNumber,
 			int position, char character) {
 		this.user = user;
 		this.stateVector = stateVector;
@@ -37,10 +36,10 @@ public abstract class Request {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	public Vector<Integer> getStateVector() {
+	public StateVector getStateVector() {
 		return stateVector;
 	}
-	public void setStateVector(Vector<Integer> stateVector) {
+	public void setStateVector(StateVector stateVector) {
 		this.stateVector = stateVector;
 	}
 	public int getSerialNumber() {
