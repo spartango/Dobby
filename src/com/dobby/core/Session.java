@@ -1,6 +1,7 @@
 package com.dobby.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,25 +32,38 @@ public class Session implements Requestable{
 		this.docName = docName;
 	}
 
+	/**
+	 * Receives a request, and enters it into the Request queue
+	 * @param r
+	 */
 	@Override
-	public void receiveRequest(Request r){
-		//TODO implement receiving requests -> add to Queue
+	public synchronized void receiveRequest(Request r){
+		requestQueue.add(r);
 	}
 	
-	@Override
-	public void executeRequest(Request r){
+	/**
+	 * 
+	 * @param r
+	 */
+	public synchronized void executeRequest(Request r){
 		//TODO implement executing requests
 	}
 
-	public List<Request> getRequestLog() {
-		return requestLog;
-	}
 	
+	
+	public boolean isRequestQueueEmpty() {
+		return requestQueue.isEmpty();
+	}
+
+	public Iterator<Request> requestLogIterator() {
+		return requestLog.iterator();
+	}
+
 	/**
 	 * Gets a particular request from the log by serial number
 	 * returns null if none is found
 	 * @param serialNo
-	 * @return
+	 * @return request
 	 */
 	public Request getRequestForSerialNumber(int serialNo){
 		for(Request r: requestLog){
@@ -62,7 +76,7 @@ public class Session implements Requestable{
 	/**
 	 * Translates a request into an appropriate space for execution
 	 * @param target
-	 * @return
+	 * @return translated request
 	 */
 	protected Request translateRequest(Request target){
 		//TODO implement translateRequest

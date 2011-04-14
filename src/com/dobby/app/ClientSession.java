@@ -11,8 +11,7 @@ public class ClientSession implements Requestable{
 		
 	}
 
-	@Override
-	public void executeRequest(Request r) {
+	public synchronized void executeRequest(Request r) {
 		// TODO Auto-generated method stub
 		
 	}
