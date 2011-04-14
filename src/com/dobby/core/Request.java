@@ -42,6 +42,7 @@ public abstract class Request {
 	public void setStateVector(StateVector stateVector) {
 		this.stateVector = stateVector;
 	}
+	
 	public int getSerialNumber() {
 		return serialNumber;
 	}

@@ -1,10 +1,8 @@
 package com.dobby.core;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 
@@ -16,7 +14,7 @@ import java.util.Queue;
 public class Session implements Requestable{
 	private Queue<Request> requestQueue;
 	private List<Request> requestLog;
-	private Map<Request, StateVector> currentVectors;
+	private StateVector currentState;
 	private DocumentModel docMod;
 	private String docName;
 	
@@ -27,9 +25,9 @@ public class Session implements Requestable{
 	public Session(String docName) {
 		this.requestQueue = new LinkedList<Request>();
 		this.requestLog = new LinkedList<Request>();
-		this.currentVectors = new HashMap<Request, StateVector>();
 		this.docMod = new DocumentModel();
 		this.docName = docName;
+		this.currentState = docMod.getRoot();
 	}
 
 	/**
@@ -83,12 +81,16 @@ public class Session implements Requestable{
 		return null;
 	}
 	
-	public StateVector getStateForUser(String user){
-		return currentVectors.get(user);
+	public StateVector getCurrentState() {
+		return currentState;
 	}
-	
+
+	public void setCurrentState(StateVector currentState) {
+		this.currentState = currentState;
+	}
+
 	public String getCurrentText() {
-		return docMod.getCurrentText();
+		return docMod.getTextAtState(currentState);
 	}
 
 	public void setDocName(String docName) {

@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class StateVector implements Cloneable{
+public class StateVector implements Cloneable {
 
 	private Map<String, Integer> vector;
 
 	/**
 	 * Creates a new, empty StateVector
 	 */
-	public StateVector(){	
+	public StateVector() {
 		this.vector = new HashMap<String, Integer>();
 	}
 
@@ -46,29 +46,40 @@ public class StateVector implements Cloneable{
 	public Integer remove(String arg0) {
 		return vector.remove(arg0);
 	}
-	
-	public void incrementUser(String user){
+
+	public void incrementUser(String user) {
 		vector.put(user, getUser(user) + 1);
 	}
 
-	public void decrementUser(String user){
+	public void decrementUser(String user) {
 		Integer current = getUser(user);
-		vector.put(user, (current < 1)? 0 : (current - 1));
+		vector.put(user, (current < 1) ? 0 : (current - 1));
 	}
-	
-	public void resetUser(String user){
+
+	public void resetUser(String user) {
 		vector.put(user, 0);
 	}
-	
+
 	public int size() {
 		return vector.size();
-	}	
-	
-	public StateVector clone(){
+	}
+
+	public StateVector clone() {
 		StateVector copy = new StateVector();
-		for(String s : this.getUsers()){
+		for (String s : this.getUsers()) {
 			copy.put(s, this.getUser(s));
 		}
 		return copy;
+	}
+
+	public boolean equals(StateVector target) {
+		if (target.getUsers().equals(this.getUsers())) {
+			for (String user : this.getUsers()) {
+				if (getUser(user) != target.getUser(user))
+					return false;
+			}
+			return true;
+		} else
+			return false;
 	}
 }

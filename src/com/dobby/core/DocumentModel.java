@@ -13,7 +13,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 public class DocumentModel {
 	private DirectedGraph<StateVector, Request> interactionModel;
 	private StateVector root;
-	
 	//Should probably have caches of text state so we dont have to recalculate.
 	
 	/**
@@ -25,11 +24,6 @@ public class DocumentModel {
 				Request.class);
 		root = new StateVector(); 
 		interactionModel.addVertex(root);
-	}
-
-	public String getCurrentText() {
-		// TODO get current text from document
-		return null;
 	}
 	
 	public Request getRequestForSerialNumber(int serialNo){
@@ -90,6 +84,12 @@ public class DocumentModel {
 		//TODO cache this.
 		return null;
 	}
+
+	public StateVector getRoot() {
+		return root;
+	}
+	
+	
 	
 	// TODO implement operations on the document model (addition of state,
 	// requests)
