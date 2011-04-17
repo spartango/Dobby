@@ -25,14 +25,20 @@ public class InsertRequest extends Request {
 	}
 
 	/**
+	 * Note: Differs slightly from the algorithm, as users are strings
+	 * in our case.  This does not affect the correctness of the algorithm
+	 * but merely allows user2 to always insert before user1.
 	 * Transforms this request with respect to another request based 
 	 * on transformation rules:
 	 * @param r 
 	 */
 	@Override
 	public Request transform(Request r) {
-		// TODO(John) Auto-generated method stub
-		return null;
+		if (position < r.getPosition())
+			return this;
+		else
+			return new InsertRequest(this.user, this.stateVector, 
+					this.serialNumber, position + 1, this.character);
 	}
 
 	/**
@@ -41,8 +47,7 @@ public class InsertRequest extends Request {
 	 */
 	@Override
 	public String apply(String target) {
-		// TODO(John) Auto-generated method stub
-		return null;
+		return new StringBuffer(target).insert(position, character).toString();
 	}
 
 }
