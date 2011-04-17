@@ -31,7 +31,7 @@ public class DeleteRequest extends Request {
 	 */
 	@Override
 	public Request transform(Request r) {
-		// TODO Auto-generated method stub
+		// TODO(John) Auto-generated method stub
 		return null;
 	}
 
@@ -41,7 +41,7 @@ public class DeleteRequest extends Request {
 	 */
 	@Override
 	public String apply(String target) {
-		// TODO Auto-generated method stub
+		// TODO(John) Auto-generated method stub
 		return null;
 	}
 	
