@@ -37,6 +37,8 @@ public class Session implements Requestable{
 	@Override
 	public synchronized void receiveRequest(Request r){
 		requestQueue.add(r);
+		requestLog.add(r);
+		//TODO add to document model
 	}
 	
 	/**
