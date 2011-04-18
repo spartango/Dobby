@@ -38,7 +38,8 @@ public class Session implements Requestable{
 	public synchronized void receiveRequest(Request r){
 		requestQueue.add(r);
 		requestLog.add(r);
-		//TODO add to document model
+		//add to document model
+		docMod.addRequest(r.stateVector,r.transform(r).stateVector, r);
 	}
 	
 	/**
@@ -104,8 +105,9 @@ public class Session implements Requestable{
 	}
 	
 	public boolean Reachable(Request target){
-		//TODO find if somethings reachable
-		return false;
+		//TODO (Nida) find if somethings reachable
+		return docMod.containsRequest(target);
+		//return false;
 	}
 	
 	
