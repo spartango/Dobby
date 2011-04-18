@@ -31,8 +31,14 @@ public class DeleteRequest extends Request {
 	 */
 	@Override
 	public Request transform(Request r) {
-		// TODO(John) Auto-generated method stub
-		return null;
+		if(position < r.getPosition())
+			return this;
+		else if(position > r.getPosition())
+			return new DeleteRequest(this.user, this.stateVector,
+					this.serialNumber, this.position - 1,
+					this.character);
+		else
+			return new IdentityRequest(this.user, this.stateVector, this.serialNumber);
 	}
 
 	/**
@@ -41,8 +47,9 @@ public class DeleteRequest extends Request {
 	 */
 	@Override
 	public String apply(String target) {
-		// TODO(John) Auto-generated method stub
-		return null;
+		String firsthalf = target.substring(0, position);
+		String secondhalf = target.substring(position+1);
+		return firsthalf+secondhalf;
 	}
 	
 
