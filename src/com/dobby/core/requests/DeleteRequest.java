@@ -46,14 +46,17 @@ public class DeleteRequest extends Request {
 
 	/**
 	 * Applies this delete operation to the desired string
-	 * 
+	 * if we're outside of the target bounds, return the target, unmodified
 	 * @param target
 	 */
 	@Override
 	public String apply(String target) {
-		String firsthalf = target.substring(0, position);
-		String secondhalf = target.substring(position + 1);
-		return firsthalf + secondhalf;
+		if (position < target.length()) {
+			String firsthalf = target.substring(0, position);
+			String secondhalf = target.substring(position + 1);
+			return firsthalf + secondhalf;
+		} else
+			return target;
 	}
 
 }
