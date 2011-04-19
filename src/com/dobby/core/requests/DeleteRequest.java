@@ -51,6 +51,8 @@ public class DeleteRequest extends Request {
 		} else if (r instanceof InsertRequest) {
 			desired = new DeleteRequest(this.user, this.stateVector,
 					this.serialNumber, this.position + 1, this.character);
+		} else if(r instanceof IdentityRequest) {
+			desired = this.clone();
 		}
 		return desired;
 	}

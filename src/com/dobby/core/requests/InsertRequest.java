@@ -50,6 +50,8 @@ public class InsertRequest extends Request {
 		} else if (r instanceof DeleteRequest) {
 			desired = new InsertRequest(this.user, this.stateVector,
 					this.serialNumber, position - 1, this.character);
+		} else if(r instanceof IdentityRequest) {
+			desired = this.clone();
 		}
 		return desired;
 	}
