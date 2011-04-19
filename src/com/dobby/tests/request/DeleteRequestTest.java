@@ -1,10 +1,12 @@
 package com.dobby.tests.request;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 import com.dobby.core.requests.DeleteRequest;
 
@@ -12,7 +14,12 @@ public class DeleteRequestTest {
 
 	@Test
 	public void testInsertTransform() {
-		fail("Not yet implemented"); // TODO
+		DeleteRequest delete = new DeleteRequest("Test", new StateVector(), 0, 
+				7, '7');
+		DeleteRequest transformTest = new DeleteRequest("Test", 
+				delete.getStateVector(), 0, 8, '7');
+		Request transformed = delete.transform(delete);
+		assertEquals(transformTest.hashCode(),transformed.hashCode());
 	}
 	
 	@Test
