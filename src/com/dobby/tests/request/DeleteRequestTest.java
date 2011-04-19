@@ -1,6 +1,6 @@
 package com.dobby.tests.request;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -14,14 +14,14 @@ public class DeleteRequestTest {
 
 	@Test
 	public void testInsertTransform() {
-		DeleteRequest delete = new DeleteRequest("Test", new StateVector(), 0, 
+		DeleteRequest delete = new DeleteRequest("Test", new StateVector(), 0,
 				7, '7');
-		DeleteRequest transformTest = new DeleteRequest("Test", 
+		DeleteRequest transformTest = new DeleteRequest("Test",
 				delete.getStateVector(), 0, 8, '7');
 		Request transformed = delete.transform(delete);
-		assertEquals(transformTest.hashCode(),transformed.hashCode());
+		assertEquals(transformTest.hashCode(), transformed.hashCode());
 	}
-	
+
 	@Test
 	public void testDeleteTransform() {
 		fail("Not yet implemented"); // TODO
