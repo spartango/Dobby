@@ -11,7 +11,12 @@ import com.dobby.core.requests.DeleteRequest;
 public class DeleteRequestTest {
 
 	@Test
-	public void testTransform() {
+	public void testInsertTransform() {
+		fail("Not yet implemented"); // TODO
+	}
+	
+	@Test
+	public void testDeleteTransform() {
 		fail("Not yet implemented"); // TODO
 	}
 

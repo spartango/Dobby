@@ -55,13 +55,18 @@ public class InsertRequest extends Request {
 	}
 
 	/**
-	 * Applies this insert operation to the target string
+	 * Applies this insert operation to the target string, leaving the target
+	 * unmodified if the op is at a position beyond the tail
 	 * 
 	 * @param target
 	 */
 	@Override
 	public String apply(String target) {
-		return new StringBuffer(target).insert(position, character).toString();
+		if (position <= target.length())
+			return new StringBuffer(target).insert(position, character)
+					.toString();
+		else
+			return target;
 	}
 
 	public InsertRequest clone() {
