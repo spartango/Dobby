@@ -24,7 +24,10 @@ public class StateVector implements Cloneable {
 	}
 
 	public Integer getUser(String arg0) {
-		return vector.get(arg0);
+		if (vector.containsKey(arg0))
+			return vector.get(arg0);
+		else
+			return 0;
 	}
 
 	public boolean isEmpty() {
@@ -48,12 +51,17 @@ public class StateVector implements Cloneable {
 	}
 
 	public void incrementUser(String user) {
-		vector.put(user, getUser(user) + 1);
+		if (vector.containsKey(user))
+			vector.put(user, getUser(user) + 1);
+		else
+			vector.put(user, 1);
 	}
 
 	public void decrementUser(String user) {
-		Integer current = getUser(user);
-		vector.put(user, (current < 1) ? 0 : (current - 1));
+		if (vector.containsKey(user)) {
+			Integer current = getUser(user);
+			vector.put(user, (current < 1) ? 0 : (current - 1));
+		}
 	}
 
 	public void resetUser(String user) {
