@@ -45,7 +45,7 @@ public class DeleteRequestTest {
 		Request d4 = new DeleteRequest ("Exam", new StateVector(), 1,
 				1, '1');
 		Request transform2 = d2.transform(d1);
-		String product2 = transform.apply(d3.apply(testString));
+		String product2 = transform2.apply(d3.apply(testString2));
 		System.out.println(testString2 + " Double delete produced, " +
 				"request positioned after second" + product2);
 		assertTrue(product2.equals("03456789abcdef"));
@@ -57,7 +57,7 @@ public class DeleteRequestTest {
 		Request d6 = new DeleteRequest ("Exam", new StateVector(), 1,
 				7, '7');
 		Request transform3 = d6.transform(d5);
-		String product3 = transform.apply(d5.apply(testString));
+		String product3 = transform3.apply(d5.apply(testString3));
 		System.out.println(testString3 + "Double delete produced" +
 				product3);
 		assertTrue(product3.equals("01345689abcdef"));
