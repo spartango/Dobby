@@ -179,6 +179,13 @@ public class StateVector implements Cloneable {
 	 * @return
 	 */
 	public boolean equals(StateVector target) {
-		return this.hashCode() == target.hashCode();
+		if (target.getUsers().equals(this.getUsers())) {
+			for (String user : this.getUsers()) {
+				if (getUser(user) != target.getUser(user))
+					return false;
+			}
+			return true;
+		} else
+			return false;
 	}
 }

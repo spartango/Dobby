@@ -18,8 +18,14 @@ public class DocumentModelTest {
 				'a');
 		StateVector newState = testReq.getStateVector().incrementedUser(
 				testReq.getUser());
-		doc.addRequest(doc.getRoot(), newState, testReq);
-		//TODO check if we really did add..
+		doc.addRequest(testReq.getStateVector(), newState, testReq);
+
+		testReq = new InsertRequest("Test", newState.clone(), 1, 1, 'b');
+		StateVector nextState = testReq.getStateVector().incrementedUser(
+				testReq.getUser());
+		doc.addRequest(testReq.getStateVector(), nextState, testReq);
+		
+		// TODO check if we really did add..
 		fail("Ops performed, not validated");
 	}
 

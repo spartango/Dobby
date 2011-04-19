@@ -31,4 +31,27 @@ public class StateVectorTest {
 		assertTrue(testVector.getUser("Test") == 0
 				&& testVector.getUser("Testx") == 0);
 	}
+
+	@Test
+	public void testEquals() {
+		StateVector alpha = new StateVector();
+		StateVector beta = new StateVector();
+		alpha.put("TestA", 1);
+		alpha.put("TestB", 2);
+		beta.put("TestA", 1);
+		beta.put("TestB", 2);
+		assertTrue(alpha.equals(beta));
+		alpha.put("TestC", 2);
+		assertTrue(!alpha.equals(beta));
+		assertTrue(!beta.equals(alpha));
+	}
+	
+	@Test
+	public void testClone() {
+		StateVector alpha = new StateVector();
+		StateVector beta = new StateVector();
+		StateVector clone = beta.clone();
+		assertTrue(alpha.equals(clone));
+		assertTrue(beta != clone && beta.equals(clone));
+	}
 }
