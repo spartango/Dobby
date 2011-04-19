@@ -59,8 +59,22 @@ public class Session implements Requestable {
 		}
 	}
 
+	/**
+	 * Checks if the requestQueue is empty
+	 * 
+	 * @return
+	 */
 	public boolean isRequestQueueEmpty() {
 		return requestQueue.isEmpty();
+	}
+
+	/**
+	 * Provides the number of pending operations on this session
+	 * 
+	 * @return
+	 */
+	public int getRequestQueueLength() {
+		return requestQueue.size();
 	}
 
 	/**
@@ -82,18 +96,50 @@ public class Session implements Requestable {
 		this.currentState = currentState;
 	}
 
+	/**
+	 * Gets the text body of the document
+	 * 
+	 * @return
+	 */
 	public String getCurrentText() {
 		return docMod.getText();
 	}
 
+	/**
+	 * Sets the document name
+	 * 
+	 * @param docName
+	 */
 	public void setDocName(String docName) {
 		this.docName = docName;
 	}
 
+	/**
+	 * Gets the document name
+	 * 
+	 * @return
+	 */
 	public String getDocName() {
 		return docName;
 	}
 
+	/**
+	 * Gets the number of requests recieved from a user
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public int getUserState(String user) {
+		return currentState.getUser(user);
+	}
+
+	/**
+	 * Gets a request from the log, based on user and the request ordering
+	 * 
+	 * @param user
+	 * @param index
+	 * @return
+	 */
 	public Request getRequest(String user, int index) {
 		Request desired = null;
 		if (requestLog.containsKey(user)) {
@@ -105,10 +151,20 @@ public class Session implements Requestable {
 		return desired;
 	}
 
+	/**
+	 * 
+	 * @param target
+	 * @return
+	 */
 	public boolean Reachable(Request target) {
 		return docMod.containsRequest(target);
 	}
 
+	/**
+	 * Inserts a request into the log of requests
+	 * 
+	 * @param r
+	 */
 	protected void putRequestInLog(Request r) {
 		if (requestLog.containsKey(r.user)) {
 			List<Request> userLog = requestLog.get(r.user);
@@ -116,6 +172,7 @@ public class Session implements Requestable {
 		} else {
 			List<Request> userLog = new Vector<Request>();
 			userLog.add(r);
+			requestLog.put(r.getUser(), userLog);
 		}
 
 	}

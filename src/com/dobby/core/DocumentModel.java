@@ -28,23 +28,43 @@ public class DocumentModel {
 		text = "";
 	}
 
+	/**
+	 * Provides the request(s) that created the target state from the most
+	 * immediate predecessor state(s) 
+	 * @param vertex
+	 * @return
+	 */
 	public Set<Request> incomingRequestsOf(StateVector vertex) {
 		return interactionModel.incomingEdgesOf(vertex);
 	}
 
+	/**
+	 * Provides the request(s) diverging from this sate
+	 * @param vertex
+	 * @return
+	 */
 	public Set<Request> outgoingRequestsOf(StateVector vertex) {
 		return interactionModel.outgoingEdgesOf(vertex);
 	}
 
+	/**
+	 * Adds a request that goes from one state to another
+	 * @param sourceVertex
+	 * @param targetVertex
+	 * @param e
+	 * @return
+	 */
 	public boolean addRequest(StateVector sourceVertex,
 			StateVector targetVertex, Request e) {
 		return interactionModel.addEdge(sourceVertex, targetVertex, e);
 	}
 
-	public boolean addState(StateVector v) {
-		return interactionModel.addVertex(v);
-	}
-
+	/**
+	 * 
+	 * @param sourceVertex
+	 * @param targetVertex
+	 * @return
+	 */
 	public boolean containsRequest(StateVector sourceVertex,
 			StateVector targetVertex) {
 		return interactionModel.containsEdge(sourceVertex, targetVertex);

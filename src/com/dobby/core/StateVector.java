@@ -108,6 +108,18 @@ public class StateVector implements Cloneable {
 	}
 
 	/**
+	 * Copies this state, and increments the copy to provide a new state
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public StateVector incrementedUser(String user) {
+		StateVector target = this.clone();
+		target.incrementUser(user);
+		return target;
+	}
+
+	/**
 	 * Decrease the number of requests received from a user by 1
 	 * 
 	 * @param user
@@ -117,6 +129,18 @@ public class StateVector implements Cloneable {
 			Integer current = getUser(user);
 			vector.put(user, (current < 1) ? 0 : (current - 1));
 		}
+	}
+
+	/**
+	 * Copies this state, and decrements the copy to provide a new state
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public StateVector decrementedUser(String user) {
+		StateVector target = this.clone();
+		target.decrementUser(user);
+		return target;
 	}
 
 	/**
