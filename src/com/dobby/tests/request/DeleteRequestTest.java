@@ -1,6 +1,5 @@
 package com.dobby.tests.request;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,19 +8,35 @@ import org.junit.Test;
 import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 import com.dobby.core.requests.DeleteRequest;
-import com.dobby.core.Request;
+import com.dobby.core.requests.InsertRequest;
 
 public class DeleteRequestTest {
 
 	@Test
 	public void testInsertTransform() {
-		
-		
+		DeleteRequest delete = new DeleteRequest("Test", new StateVector(), 0, 
+				11, 'b');
 		String testString = "0123456789abcdef";
 		Request d1 = new DeleteRequest("Test", new StateVector(), 0, 
 				2, '2');
-		Request d2 = new DeleteRequest ("Exam", new StateVector(), 1,
-				7, '7');
+		Request d2 = new InsertRequest ("Exam", new StateVector(), 1,
+				15, 'x');
+		Request transform = d1.transform(d2);
+		String product = transform.apply(d2.apply(testString));
+		System.out.println(testString + " Insert-Delete produced"
+				+ product);
+		assertTrue(product.equals("0123456789abcdefx"));
+		
+		String testString2 = "0123456789abcdef";
+		Request d3 = new DeleteRequest("Test", new StateVector(), 0, 
+				2, '2');
+		Request d4 = new InsertRequest ("Exam", new StateVector(), 1,
+				0, 'x');
+		Request transform2 = d3.transform(d4);
+		String product2 = transform2.apply(d4.apply(testString2));
+		System.out.println(testString2 + " Insert-Delete produced"
+				+ product2);
+		assertTrue(product2.equals("x013456789abcdef"));	
 	}
 	
 	@Test
