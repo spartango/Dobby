@@ -8,13 +8,14 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 /**
  * 
  * @author anand
- *
+ * 
  */
 public class DocumentModel {
 	private DirectedGraph<StateVector, Request> interactionModel;
 	private StateVector root;
-	//Should probably have caches of text state so we dont have to recalculate.
-	
+
+	private String text;
+
 	/**
 	 * Creates a new document model, initializing the DirectedGraph internally
 	 * Starts with a single vertex
@@ -22,13 +23,9 @@ public class DocumentModel {
 	public DocumentModel() {
 		this.interactionModel = new DefaultDirectedGraph<StateVector, Request>(
 				Request.class);
-		root = new StateVector(); 
+		root = new StateVector();
 		interactionModel.addVertex(root);
-	}
-	
-	public Request getRequestForSerialNumber(int serialNo){
-		//TODO get a request from the graph
-		return null;
+		text = "";
 	}
 
 	public Set<Request> incomingRequestsOf(StateVector vertex) {
@@ -39,8 +36,8 @@ public class DocumentModel {
 		return interactionModel.outgoingEdgesOf(vertex);
 	}
 
-	public boolean addRequest(StateVector sourceVertex, StateVector targetVertex,
-			Request e) {
+	public boolean addRequest(StateVector sourceVertex,
+			StateVector targetVertex, Request e) {
 		return interactionModel.addEdge(sourceVertex, targetVertex, e);
 	}
 
@@ -61,7 +58,8 @@ public class DocumentModel {
 		return interactionModel.containsVertex(v);
 	}
 
-	public Request removeRequest(StateVector sourceVertex, StateVector targetVertex) {
+	public Request removeRequest(StateVector sourceVertex,
+			StateVector targetVertex) {
 		return interactionModel.removeEdge(sourceVertex, targetVertex);
 	}
 
@@ -73,25 +71,16 @@ public class DocumentModel {
 		return interactionModel.removeVertex(v);
 	}
 
-	public String getTextAtState(StateVector v){
-		//TODO accumulate text upto state
-		//TODO cache this.
-		return null;
-	}
-	
-	public String getTextAtState(Request r){
-		//TODO accumulate text upto state
-		//TODO cache this.
-		return null;
-	}
-
 	public StateVector getRoot() {
 		return root;
 	}
-	
-	
-	
-	// TODO implement operations on the document model (addition of state,
-	// requests)
-	// TODO implement operations from document model (current state, etc)
+
+	public String getText() {
+		return text;
+	}
+
+	public void applyRequestToText(Request r) {
+		text = r.apply(text);
+	}
+
 }
