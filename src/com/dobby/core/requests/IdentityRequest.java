@@ -42,4 +42,11 @@ public class IdentityRequest extends Request {
 		return new IdentityRequest(user, stateVector, serialNumber);
 	}
 
+	@Override
+	public boolean equals(Object r) {
+		return ((r instanceof IdentityRequest)
+				&& (((Request) r).getSerialNumber() == this.serialNumber)
+				&& (((Request) r).getUser() == this.user) && (((Request) r)
+				.getStateVector().equals(this.stateVector)));
+	}
 }

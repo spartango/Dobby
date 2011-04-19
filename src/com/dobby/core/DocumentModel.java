@@ -56,6 +56,8 @@ public class DocumentModel {
 	 */
 	public boolean addRequest(StateVector sourceVertex,
 			StateVector targetVertex, Request e) {
+		if(!containsState(targetVertex))
+			interactionModel.addVertex(targetVertex);
 		return interactionModel.addEdge(sourceVertex, targetVertex, e);
 	}
 

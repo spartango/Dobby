@@ -51,7 +51,7 @@ public class DeleteRequest extends Request {
 		} else if (r instanceof InsertRequest) {
 			desired = new DeleteRequest(this.user, this.stateVector,
 					this.serialNumber, this.position + 1, this.character);
-		} else if(r instanceof IdentityRequest) {
+		} else if (r instanceof IdentityRequest) {
 			desired = this.clone();
 		}
 		return desired;
@@ -76,5 +76,15 @@ public class DeleteRequest extends Request {
 	public DeleteRequest clone() {
 		return new DeleteRequest(user, stateVector, serialNumber, position,
 				character);
+	}
+
+	@Override
+	public boolean equals(Object r) {
+		return ((r instanceof DeleteRequest)
+				&& (((Request) r).getSerialNumber() == this.serialNumber)
+				&& (((Request) r).getUser() == this.user)
+				&& (((Request) r).getCharacter() == this.character)
+				&& (((Request) r).getPosition() == this.position) && (((Request) r)
+				.getStateVector().equals(this.stateVector)));
 	}
 }

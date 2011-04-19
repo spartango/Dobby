@@ -36,6 +36,7 @@ public class StateVectorTest {
 	public void testEquals() {
 		StateVector alpha = new StateVector();
 		StateVector beta = new StateVector();
+		assertTrue(alpha.equals(beta));
 		alpha.put("TestA", 1);
 		alpha.put("TestB", 2);
 		beta.put("TestA", 1);

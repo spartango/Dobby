@@ -84,4 +84,12 @@ public abstract class Request implements Cloneable {
 	 * @return the modified target
 	 */
 	public abstract String apply(String target);
+	
+	/**
+	 * Compares this request to another
+	 * @param r
+	 * @return
+	 */
+	@Override
+	public abstract boolean equals(Object r);
 }

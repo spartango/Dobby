@@ -50,7 +50,7 @@ public class InsertRequest extends Request {
 		} else if (r instanceof DeleteRequest) {
 			desired = new InsertRequest(this.user, this.stateVector,
 					this.serialNumber, position - 1, this.character);
-		} else if(r instanceof IdentityRequest) {
+		} else if (r instanceof IdentityRequest) {
 			desired = this.clone();
 		}
 		return desired;
@@ -76,4 +76,13 @@ public class InsertRequest extends Request {
 				character);
 	}
 
+	@Override
+	public boolean equals(Object r) {
+		return ((r instanceof InsertRequest)
+				&& (((Request) r).getSerialNumber() == this.serialNumber)
+				&& (((Request) r).getUser() == this.user)
+				&& (((Request) r).getCharacter() == this.character)
+				&& (((Request) r).getPosition() == this.position) && (((Request) r)
+				.getStateVector().equals(this.stateVector)));
+	}
 }
