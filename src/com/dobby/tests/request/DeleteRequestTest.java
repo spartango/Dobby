@@ -1,15 +1,12 @@
 package com.dobby.tests.request;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 import com.dobby.core.requests.DeleteRequest;
-import com.dobby.core.Request;
 
 public class DeleteRequestTest {
 
@@ -42,7 +39,7 @@ public class DeleteRequestTest {
 				2, '2');
 		Request d4 = new DeleteRequest ("Exam", new StateVector(), 1,
 				1, '1');
-		Request transform2 = d2.transform(d1);
+		Request transform2 = d4.transform(d3);
 		String product2 = transform2.apply(d3.apply(testString2));
 		System.out.println(testString2 + " Double delete produced, " +
 				"request positioned after second" + product2);
