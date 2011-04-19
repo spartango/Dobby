@@ -3,9 +3,6 @@ package com.dobby.tests.core;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashMap;
-import java.util.Vector;
-
 import org.junit.Test;
 
 import com.dobby.core.DocumentModel;
@@ -24,11 +21,11 @@ public class DocumentModelTest {
 				testReq.getUser());
 		doc.addRequest(testReq.getStateVector(), newState, testReq);
 
-		testReq = new InsertRequest("Test", newState.clone(), 1, 1, 'b');
-		StateVector nextState = testReq.getStateVector().incrementedUser(
-				testReq.getUser());
-		doc.addRequest(testReq.getStateVector(), nextState, testReq);
-		assertTrue(doc.outgoingRequestsOf(doc.getRoot()).contains(newState));
+		Request testReq2 = new InsertRequest("Test", newState.clone(), 1, 1, 'b');
+		StateVector nextState = testReq2.getStateVector().incrementedUser(
+				testReq2.getUser());
+		doc.addRequest(testReq2.getStateVector(), nextState, testReq2);
+		assertTrue(doc.outgoingRequestsOf(doc.getRoot()).contains(testReq));
 	}
 
 	@Test
