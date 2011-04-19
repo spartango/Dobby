@@ -6,7 +6,7 @@ package com.dobby.core;
  * 
  * @author anand
  */
-public abstract class Request {
+public abstract class Request implements Cloneable {
 	protected String user;
 	protected StateVector stateVector;
 	protected int serialNumber;

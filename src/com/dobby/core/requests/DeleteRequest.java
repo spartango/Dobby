@@ -28,25 +28,37 @@ public class DeleteRequest extends Request {
 
 	/**
 	 * Transforms this request with respect to another request based on
-	 * transformation rules:
+	 * transformation rules from CA Ellis 1989 "Concurrency control in groupware
+	 * systems." if position is before the target, then no transform needed
+	 * else. if target is a delete, return the identity if at same pos, or a
+	 * left-shifted copy of this if this follows the target. if target is an
+	 * insert, then always shift this right by one
 	 * 
 	 * @param r
 	 */
 	@Override
 	public Request transform(Request r) {
-		if (position < r.getPosition())
-			return this;
-		else if (position > r.getPosition())
-			return new DeleteRequest(this.user, this.stateVector,
-					this.serialNumber, this.position - 1, this.character);
-		else
-			return new IdentityRequest(this.user, this.stateVector,
-					this.serialNumber);
+		Request desired = null;
+		if (position < r.getPosition()) {
+			desired = this.clone();
+		} else if (r instanceof DeleteRequest) {
+			if (position > r.getPosition())
+				desired = new DeleteRequest(this.user, this.stateVector,
+						this.serialNumber, this.position - 1, this.character);
+			else if (position == r.getPosition())
+				desired = new IdentityRequest(this.user, this.stateVector,
+						this.serialNumber);
+		} else if (r instanceof InsertRequest) {
+			desired = new DeleteRequest(this.user, this.stateVector,
+					this.serialNumber, this.position + 1, this.character);
+		}
+		return desired;
 	}
 
 	/**
-	 * Applies this delete operation to the desired string
-	 * if we're outside of the target bounds, return the target, unmodified
+	 * Applies this delete operation to the desired string if we're outside of
+	 * the target bounds, return the target, unmodified
+	 * 
 	 * @param target
 	 */
 	@Override
@@ -59,4 +71,8 @@ public class DeleteRequest extends Request {
 			return target;
 	}
 
+	public DeleteRequest clone() {
+		return new DeleteRequest(user, stateVector, serialNumber, position,
+				character);
+	}
 }

@@ -6,9 +6,9 @@ import com.dobby.core.StateVector;
 public class IdentityRequest extends Request {
 
 	/**
-	 * Creates a new Identity Request with the supplied state
-	 * Note that the position and character fields are populated 
-	 * as invalid/nul
+	 * Creates a new Identity Request with the supplied state Note that the
+	 * position and character fields are populated as invalid/nul
+	 * 
 	 * @param user
 	 * @param stateVector
 	 * @param serialNumber
@@ -36,6 +36,10 @@ public class IdentityRequest extends Request {
 	 */
 	public String apply(String target) {
 		return target;
+	}
+
+	public IdentityRequest clone() {
+		return new IdentityRequest(user, stateVector, serialNumber);
 	}
 
 }
