@@ -24,7 +24,12 @@ public class SessionTest {
 
 	@Test
 	public void testExecuteRequest() {
-		fail("Not yet implemented"); // TODO
+		Session testSession = new Session("TestDoc");
+		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
+				0, 'a');
+		testSession.receiveRequest(testRequest);
+		testSession.executeRequest();
+		assertTrue(testSession.getCurrentText().equals("a"));
 	}
 
 	@Test
