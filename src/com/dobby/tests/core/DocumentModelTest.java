@@ -29,7 +29,7 @@ public class DocumentModelTest {
 	}
 
 	@Test
-	public void testContainsRequest() {
+	public void testContainsState() {
 		DocumentModel doc = new DocumentModel();
 		Request testReq = new InsertRequest("Test", new StateVector(), 0, 0,
 				'a');
@@ -43,13 +43,25 @@ public class DocumentModelTest {
 	}
 
 	@Test
-	public void testContainsState() {
-		fail("Not yet implemented"); // TODO
+	public void testContainsRequest() {
+		DocumentModel doc = new DocumentModel();
+		Request testReq = new InsertRequest("Test", new StateVector(), 0, 0,
+				'a');
+		assertTrue(doc.getRoot().equals(testReq.getStateVector()));
+		assertTrue(doc.containsState(testReq.getStateVector()));
+		StateVector newState = testReq.getStateVector().incrementedUser(
+				testReq.getUser());
+		doc.addRequest(testReq.getStateVector(), newState, testReq);
+		assertTrue(doc.containsRequest(testReq));
 	}
 
 	@Test
 	public void testApplyRequestToText() {
-		fail("Not yet implemented"); // TODO
+		DocumentModel doc = new DocumentModel();
+		Request testReq = new InsertRequest("Test", new StateVector(), 0, 0,
+				'a');
+		doc.applyRequestToText(testReq);
+		assertTrue(doc.getText().equals("a"));
 	}
 
 }

@@ -62,7 +62,7 @@ public class DocumentModel {
 	}
 
 	/**
-	 * 
+	 * Checks if a request is present in the model
 	 * @param sourceVertex
 	 * @param targetVertex
 	 * @return
