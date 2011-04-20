@@ -5,6 +5,8 @@ import com.dobby.core.StateVector;
 
 public class IdentityRequest extends Request {
 
+	private static final int SEED = 31;
+	private static final int START_SEED = 23;
 	/**
 	 * Creates a new Identity Request with the supplied state Note that the
 	 * position and character fields are populated as invalid/nul
@@ -42,11 +44,11 @@ public class IdentityRequest extends Request {
 		return new IdentityRequest(user, stateVector, serialNumber);
 	}
 
-	@Override
-	public boolean equals(Object r) {
-		return ((r instanceof IdentityRequest)
-				&& (((Request) r).getSerialNumber() == this.serialNumber)
-				&& (((Request) r).getUser() == this.user) && (((Request) r)
-				.getStateVector().equals(this.stateVector)));
+	public int hashCode() {
+		int hash = START_SEED;
+		hash = hash * SEED + this.user.hashCode();
+		hash = hash * SEED + this.serialNumber;
+		hash = hash * SEED + this.stateVector.hashCode();
+		return hash;
 	}
 }

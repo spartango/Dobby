@@ -20,7 +20,8 @@ public class DocumentModelTest {
 				testReq.getUser());
 		doc.addRequest(testReq.getStateVector(), newState, testReq);
 
-		Request testReq2 = new InsertRequest("Test", newState.clone(), 1, 1, 'b');
+		Request testReq2 = new InsertRequest("Test", newState.clone(), 1, 1,
+				'b');
 		StateVector nextState = testReq2.getStateVector().incrementedUser(
 				testReq2.getUser());
 		doc.addRequest(testReq2.getStateVector(), nextState, testReq2);
@@ -44,14 +45,15 @@ public class DocumentModelTest {
 	@Test
 	public void testContainsRequest() {
 		DocumentModel doc = new DocumentModel();
-		Request testReq = new InsertRequest("Test", new StateVector(), 0, 0,
-				'a');
+		InsertRequest testReq = new InsertRequest("Test", new StateVector(), 0,
+				0, 'a');
 		assertTrue(doc.getRoot().equals(testReq.getStateVector()));
 		assertTrue(doc.containsState(testReq.getStateVector()));
 		StateVector newState = testReq.getStateVector().incrementedUser(
 				testReq.getUser());
 		doc.addRequest(testReq.getStateVector(), newState, testReq);
-		assertTrue(doc.containsRequest(testReq));
+		Request find = testReq.clone();
+		assertTrue(doc.containsRequest(find));
 	}
 
 	@Test

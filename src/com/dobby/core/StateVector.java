@@ -180,12 +180,14 @@ public class StateVector implements Cloneable {
 	 */
 	@Override
 	public boolean equals(Object target) {
-		return this.hashCode() == target.hashCode();
+		if (target == null)
+			return false;
+		else
+			return this.hashCode() == target.hashCode();
 	}
 
 	public int hashCode() {
 		return vector.hashCode();
 	}
-	
 
 }

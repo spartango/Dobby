@@ -12,6 +12,9 @@ import com.dobby.core.StateVector;
  */
 public class DeleteRequest extends Request {
 
+	private static final int SEED = 17;
+	private static final int START_SEED = 31;
+
 	/**
 	 * Creates a new DeleteRequest with the supplied state
 	 * 
@@ -77,14 +80,14 @@ public class DeleteRequest extends Request {
 		return new DeleteRequest(user, stateVector, serialNumber, position,
 				character);
 	}
-
-	@Override
-	public boolean equals(Object r) {
-		return ((r instanceof DeleteRequest)
-				&& (((Request) r).getSerialNumber() == this.serialNumber)
-				&& (((Request) r).getUser() == this.user)
-				&& (((Request) r).getCharacter() == this.character)
-				&& (((Request) r).getPosition() == this.position) && (((Request) r)
-				.getStateVector().equals(this.stateVector)));
+	
+	public int hashCode(){
+		int hash = START_SEED;
+		hash = hash * SEED + this.user.hashCode();
+		hash = hash * SEED + this.serialNumber;
+		hash = hash * SEED + this.stateVector.hashCode();
+		hash = hash * SEED + this.character;
+		hash = hash * SEED + this.position;
+		return hash;
 	}
 }
