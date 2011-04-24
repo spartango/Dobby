@@ -84,71 +84,86 @@ public class Session implements Requestable {
 	 * @return translated request
 	 */
 	protected Request translateRequest(Request target) {
-		if (target.getStateVector().equals(currentState)){
+		if (target.getStateVector().equals(currentState)) {
 			docMod.addRequest(currentState, target.getStateVector(), target);
 			return target;
-			//TODO Possibly implement else if 
+			// TODO Possibly implement else if
 		} else {
-			//note that previous state is guaranteed by the Ressel paper
-			//to return a user
+			// note that previous state is guaranteed by the Ressel paper
+			// to return a user
 			String userToDec = previousState(target);
 			StateVector decVec = currentState.decrementedUser(userToDec);
-			Request previousRequest = getRequest(userToDec, decVec.getUser(userToDec));
-			Request translatedPrevReq = translateRequest(previousRequest, decVec);
+			Request previousRequest = getRequest(userToDec,
+					decVec.getUser(userToDec));
+			Request translatedPrevReq = translateRequest(previousRequest,
+					decVec);
 			Request translatedThisReq = translateRequest(target, decVec);
-			Request transformedPrevReq = translatedPrevReq.transform(translatedThisReq);
-			Request transformedThisReq = translatedPrevReq.transform(translatedPrevReq);
-			docMod.addRequest(currentState, transformedPrevReq.getStateVector(), transformedPrevReq);
-			docMod.addRequest(currentState, transformedThisReq.getStateVector(), transformedThisReq);
+			Request transformedPrevReq = translatedPrevReq
+					.transform(translatedThisReq);
+			Request transformedThisReq = translatedPrevReq
+					.transform(translatedPrevReq);
+			docMod.addRequest(currentState,
+					transformedPrevReq.getStateVector(), transformedPrevReq);
+			docMod.addRequest(currentState,
+					transformedThisReq.getStateVector(), transformedThisReq);
 			return transformedThisReq;
-		}
-	}
-	
-	/**
-	 * Recursive call to translate a request into an appropriate space for execution.
-	 * 
-	 * @param target, state
-	 * @return translated request
-	 */
-	protected Request translateRequest(Request target, StateVector state) {
-		if (target.getStateVector().equals(state)){
-			docMod.addRequest(state, target.getStateVector(), target);
-			return target;
-		} else {
-			//note that previous state is guaranteed by the Ressel paper
-			//to return a user
-			String userToDec = previousState(target);
-			StateVector decVec = state.decrementedUser(userToDec);
-			Request previousRequest = getRequest(userToDec, decVec.getUser(userToDec));
-			Request translatedPrevReq = translateRequest(previousRequest, decVec);
-			Request translatedThisReq = translateRequest(target, decVec);
-			Request transformedPrevReq = translatedPrevReq.transform(translatedThisReq);
-			Request transformedThisReq = translatedPrevReq.transform(translatedPrevReq);
-			docMod.addRequest(state, transformedPrevReq.getStateVector(), transformedPrevReq);
-			docMod.addRequest(state, transformedThisReq.getStateVector(), transformedThisReq);
-			return transformedThisReq;
-			
 		}
 	}
 
 	/**
-	 * Helper function to get the first previous state such that
-	 * the translated request is reachable.  The User which we should
-	 * decrement to achieve this state is returned.
+	 * Recursive call to translate a request into an appropriate space for
+	 * execution.
+	 * 
+	 * @param target
+	 *            , state
+	 * @return translated request
+	 */
+	protected Request translateRequest(Request target, StateVector state) {
+		if (target.getStateVector().equals(state)) {
+			docMod.addRequest(state, target.getStateVector(), target);
+			return target;
+		} else {
+			// note that previous state is guaranteed by the Ressel paper
+			// to return a user
+			String userToDec = previousState(target);
+			StateVector decVec = state.decrementedUser(userToDec);
+			Request previousRequest = getRequest(userToDec,
+					decVec.getUser(userToDec));
+			Request translatedPrevReq = translateRequest(previousRequest,
+					decVec);
+			Request translatedThisReq = translateRequest(target, decVec);
+			Request transformedPrevReq = translatedPrevReq
+					.transform(translatedThisReq);
+			Request transformedThisReq = translatedPrevReq
+					.transform(translatedPrevReq);
+			docMod.addRequest(state, transformedPrevReq.getStateVector(),
+					transformedPrevReq);
+			docMod.addRequest(state, transformedThisReq.getStateVector(),
+					transformedThisReq);
+			return transformedThisReq;
+
+		}
+	}
+
+	/**
+	 * Helper function to get the first previous state such that the translated
+	 * request is reachable. The User which we should decrement to achieve this
+	 * state is returned.
 	 * 
 	 * @param target
 	 * @return
 	 */
-	private String previousState(Request target){
-		for(String user : currentState.getUsers()){
-			if (Reachable(currentState.decrementedUser(user)) &&
-					target.getStateVector().getUser(user) <= currentState.getUser(user)){
+	private String previousState(Request target) {
+		for (String user : currentState.getUsers()) {
+			if (Reachable(currentState.decrementedUser(user))
+					&& target.getStateVector().getUser(user) <= currentState
+							.getUser(user)) {
 				return user;
 			}
 		}
 		return null;
 	}
-	
+
 	public StateVector getCurrentState() {
 		return currentState;
 	}
@@ -220,18 +235,17 @@ public class Session implements Requestable {
 	public boolean Reachable(Request target) {
 		return docMod.containsRequest(target);
 	}
-	
+
 	/**
-	 * Same purpose as the function above, however this checks to see
-	 * if a given StateVector is in the interaction model.
-	 * This makes it easier to implement translate request
-	 *
-	 *	Note: this is overloaded, but there might not be a reason
-	 *  to keep the previous function around so possibly delete 
-	 *  the Request version after implementation of translate
-	 *  request.
+	 * Same purpose as the function above, however this checks to see if a given
+	 * StateVector is in the interaction model. This makes it easier to
+	 * implement translate request
+	 * 
+	 * Note: this is overloaded, but there might not be a reason to keep the
+	 * previous function around so possibly delete the Request version after
+	 * implementation of translate request.
 	 */
-	public boolean Reachable(StateVector target){
+	public boolean Reachable(StateVector target) {
 		return docMod.containsState(target);
 	}
 
