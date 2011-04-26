@@ -98,8 +98,9 @@ public class Session implements Runnable {
 		} else {
 			// note that previous state is guaranteed by the Ressel paper
 			// to return a user
-			String userToDec = previousState(target);
+			String userToDec = previousState(target, currentState);
 			StateVector decVec = currentState.decrementedUser(userToDec);
+			//previous Request returning null request
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
 			Request translatedPrevReq = translateRequest(previousRequest,
@@ -132,7 +133,7 @@ public class Session implements Runnable {
 		} else {
 			// note that previous state is guaranteed by the Ressel paper
 			// to return a user
-			String userToDec = previousState(target);
+			String userToDec = previousState(target, state);
 			StateVector decVec = state.decrementedUser(userToDec);
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
@@ -160,11 +161,15 @@ public class Session implements Runnable {
 	 * @param target
 	 * @return
 	 */
-	private String previousState(Request target) {
-		for (String user : currentState.getUsers()) {
-			if (Reachable(currentState.decrementedUser(user))
-					&& target.getStateVector().getUser(user) <= currentState
-							.getUser(user)) {
+	private String previousState(Request target, StateVector curState) {
+		for (String user : curState.getUsers()) {
+			
+			StateVector decUser = curState.decrementedUser(user);
+			boolean test = Reachable(decUser);
+
+			if (Reachable(decUser)
+					&& target.getStateVector().getUser(user) <= curState.getUser(user)-1) 
+			{
 				return user;
 			}
 		}
