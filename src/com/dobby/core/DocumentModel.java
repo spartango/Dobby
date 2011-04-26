@@ -92,6 +92,10 @@ public class DocumentModel {
 	public boolean removeState(StateVector v) {
 		return interactionModel.removeVertex(v);
 	}
+	
+	public Set<StateVector> getVectors(){
+		return interactionModel.vertexSet();
+	}
 
 	public StateVector getRoot() {
 		return root;

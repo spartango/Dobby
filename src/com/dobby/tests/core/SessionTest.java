@@ -3,6 +3,8 @@ package com.dobby.tests.core;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
+
 import org.junit.Test;
 
 import com.dobby.core.Request;
@@ -54,6 +56,8 @@ public class SessionTest {
 				1, 'w');
 		testSession.receiveRequest(testRequest4);
 		testSession.executeRequest();
+		Set<StateVector> set = testSession.getDocMod().getVectors();
+		System.out.println("Docmod: "+set.size());
 		testSession.executeRequest();
 		System.out.println(testSession.getCurrentText());
 

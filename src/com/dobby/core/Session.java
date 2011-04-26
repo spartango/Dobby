@@ -61,7 +61,8 @@ public class Session implements Runnable {
 			Request translated = translateRequest(target);
 			docMod.applyRequestToText(translated);
 			translated.getStateVector().incrementUser(translated.getUser());
-			docMod.addRequest(currentState, translated.getStateVector(), translated);
+			docMod.addRequest(currentState, translated.getStateVector(),
+					translated);
 			currentState = translated.getStateVector();
 		}
 	}
@@ -100,7 +101,7 @@ public class Session implements Runnable {
 			// to return a user
 			String userToDec = previousState(target, currentState);
 			StateVector decVec = currentState.decrementedUser(userToDec);
-			//previous Request returning null request
+			// previous Request returning null request
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
 			Request translatedPrevReq = translateRequest(previousRequest,
@@ -163,13 +164,13 @@ public class Session implements Runnable {
 	 */
 	private String previousState(Request target, StateVector curState) {
 		for (String user : curState.getUsers()) {
-			
+
 			StateVector decUser = curState.decrementedUser(user);
 			boolean test = Reachable(decUser);
 
 			if (Reachable(decUser)
-					&& target.getStateVector().getUser(user) <= curState.getUser(user)-1) 
-			{
+					&& target.getStateVector().getUser(user) <= curState
+							.getUser(user) - 1) {
 				return user;
 			}
 		}
@@ -289,12 +290,12 @@ public class Session implements Runnable {
 			executeRequest();
 			pause();
 		}
-		
+
 		cleanup();
 	}
 
 	private void cleanup() {
-		//Any cleanup should be done here
+		// Any cleanup should be done here
 	}
 
 	private void pause() {
@@ -317,6 +318,10 @@ public class Session implements Runnable {
 
 	public void setSleepTime(int sleepTime) {
 		this.sleepTime = sleepTime;
+	}
+
+	public DocumentModel getDocMod() {
+		return docMod;
 	}
 
 }
