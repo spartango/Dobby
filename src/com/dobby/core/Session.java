@@ -60,9 +60,9 @@ public class Session implements Runnable {
 			Request target = requestQueue.remove();
 			Request translated = translateRequest(target);
 			docMod.applyRequestToText(translated);
-			StateVector incedUser = translated.getStateVector().incrementedUser(translated.getUser());
-			docMod.addRequest(currentState, incedUser,
-					translated);
+			StateVector incedUser = translated.getStateVector()
+					.incrementedUser(translated.getUser());
+			docMod.addRequest(currentState, incedUser, translated);
 			currentState = incedUser;
 		}
 	}
@@ -114,7 +114,6 @@ public class Session implements Runnable {
 			StateVector decVec = state.decrementedUser(userToDec);
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
-			System.out.println(previousRequest.getStateVector().toString());
 			Request translatedPrevReq = translateRequest(previousRequest,
 					decVec);
 			Request translatedThisReq = translateRequest(target, decVec);
@@ -141,13 +140,10 @@ public class Session implements Runnable {
 	 */
 	private String previousState(Request target, StateVector curState) {
 		for (String user : curState.getUsers()) {
-			//TODO clean up
 			StateVector decUser = curState.decrementedUser(user);
-			boolean test = Reachable(decUser);
-			int number = target.getStateVector().getUser(user);
-			int number2 = curState.getUser(user) - 1;
-			boolean test2 = number <= number2;
-			if (test && test2) {
+			if (Reachable(decUser)
+					&& (target.getStateVector().getUser(user) <= (curState
+							.getUser(user) - 1))) {
 				return user;
 			}
 		}

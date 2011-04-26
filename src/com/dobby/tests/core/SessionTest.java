@@ -41,8 +41,10 @@ public class SessionTest {
 		testSessionx.setCurrentState(testVectors);
 		Request testRequest = new InsertRequest("User1", testVectors, 0, 0, 'x');
 		testSessionx.receiveRequest(testRequest);
-		Request testRequest2 = new InsertRequest("User1", testVectors.incrementedUser("User1"), 1, 1, 'b');
-		Request testRequest3 = new InsertRequest("User1", testRequest2.getStateVector().incrementedUser("User1"), 2, 2, 'y');
+		Request testRequest2 = new InsertRequest("User1",
+				testVectors.incrementedUser("User1"), 1, 1, 'b');
+		Request testRequest3 = new InsertRequest("User1", testRequest2
+				.getStateVector().incrementedUser("User1"), 2, 2, 'y');
 		testSessionx.receiveRequest(testRequest2);
 		testSessionx.receiveRequest(testRequest3);
 		testSessionx.executeRequest();
@@ -53,11 +55,12 @@ public class SessionTest {
 		assertTrue(testSessionx.getCurrentText().equals("xb"));
 
 		Request testRequest4 = new InsertRequest("User2", laggyTestVector, 3,
-				1, 'w');
+				0, 'w');
 		testSessionx.receiveRequest(testRequest4);
 		testSessionx.executeRequest();
 		testSessionx.executeRequest();
 		System.out.println(testSessionx.getCurrentText());
+		assertTrue(testSessionx.getCurrentText().equals("wxby"));
 
 	}
 
@@ -77,13 +80,15 @@ public class SessionTest {
 		assertTrue(testSession.Reachable(testVector));
 		Request testRequestd = new InsertRequest("Test", testVector, 0, 0, 'a');
 		testSession.receiveRequest(testRequestd);
+		testSession.executeRequest();
 		assertTrue(testSession.Reachable(new StateVector()));
 		assertTrue(testSession.Reachable(testSession.getCurrentState()));
 		assertFalse(testSession.Reachable(testSession.getCurrentState()
 				.incrementedUser("Test")));
-		Request e = new InsertRequest("Test2", testVector, 0, 1, 'a');
+		Request e = new InsertRequest("Test2",
+				testVector.incrementedUser("Test"), 0, 1, 'a');
 		testSession.receiveRequest(e);
-		testVector.incrementUser("Test2");
-		assertTrue(testSession.Reachable(testVector));
+		testSession.executeRequest();
+		assertTrue(testSession.Reachable(testVector.incrementedUser("Test")));
 	}
 }
