@@ -72,7 +72,10 @@ public class StateVector implements Cloneable {
 	 * @return
 	 */
 	public Integer put(String arg0, Integer arg1) {
-		return vector.put(arg0, arg1);
+		if (arg1.equals(0))
+			return arg1;
+		else
+			return vector.put(arg0, arg1);
 	}
 
 	/**
@@ -127,7 +130,11 @@ public class StateVector implements Cloneable {
 	public void decrementUser(String user) {
 		if (vector.containsKey(user)) {
 			Integer current = getUser(user);
-			vector.put(user, (current < 1) ? 0 : (current - 1));
+			if (current <= 1) {
+				vector.remove(user);
+			} else {
+				vector.put(user, current - 1);
+			}
 		}
 	}
 
@@ -149,7 +156,7 @@ public class StateVector implements Cloneable {
 	 * @param user
 	 */
 	public void resetUser(String user) {
-		vector.put(user, 0);
+		vector.remove(user);
 	}
 
 	/**
@@ -188,6 +195,10 @@ public class StateVector implements Cloneable {
 
 	public int hashCode() {
 		return vector.hashCode();
+	}
+
+	public String toString() {
+		return vector.toString();
 	}
 
 }

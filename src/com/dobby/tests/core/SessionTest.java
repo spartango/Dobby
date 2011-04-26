@@ -17,59 +17,57 @@ public class SessionTest {
 	@Test
 	public void testReceiveRequest() {
 		Session testSession = new Session("Test", "TestDoc");
-		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
+		Request testRequesta = new InsertRequest("Test", new StateVector(), 0,
 				0, 'a');
-		testSession.receiveRequest(testRequest);
+		testSession.receiveRequest(testRequesta);
 		assertTrue(!testSession.isRequestQueueEmpty());
-		assertTrue(testSession.getRequest("Test", 0).equals(testRequest));
+		assertTrue(testSession.getRequest("Test", 0).equals(testRequesta));
 	}
 
 	@Test
 	public void testExecuteRequest() {
 		Session testSession = new Session("User1", "TestDoc");
-		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
+		Request testRequestb = new InsertRequest("Test", new StateVector(), 0,
 				0, 'a');
-		testSession.receiveRequest(testRequest);
+		testSession.receiveRequest(testRequestb);
 		testSession.executeRequest();
 		assertTrue(testSession.getCurrentText().equals("a"));
 	}
 
 	@Test
 	public void testTranslateRequest() {
-		Session testSession = new Session("User1", "TestDoc");
-		StateVector testVector = new StateVector();
-		testSession.setCurrentState(testVector);
-		Request testRequest = new InsertRequest("User1", testVector, 0, 0, 'x');
-		testSession.receiveRequest(testRequest);
-		Request testRequest2 = new InsertRequest("User1", testVector, 1, 1, 'b');
-		Request testRequest3 = new InsertRequest("User1", testVector, 2, 2, 'y');
-		testSession.receiveRequest(testRequest2);
-		testSession.receiveRequest(testRequest3);
-		testSession.executeRequest();
+		Session testSessionx = new Session("User1", "TestDoc");
+		StateVector testVectors = new StateVector();
+		testSessionx.setCurrentState(testVectors);
+		Request testRequest = new InsertRequest("User1", testVectors, 0, 0, 'x');
+		testSessionx.receiveRequest(testRequest);
+		Request testRequest2 = new InsertRequest("User1", testVectors.incrementedUser("User1"), 1, 1, 'b');
+		Request testRequest3 = new InsertRequest("User1", testRequest2.getStateVector().incrementedUser("User1"), 2, 2, 'y');
+		testSessionx.receiveRequest(testRequest2);
+		testSessionx.receiveRequest(testRequest3);
+		testSessionx.executeRequest();
 		// stores a state vector after this request
 		// will be used to simulate User2 that gets left behind
-		StateVector laggyTestVector = testVector.clone();
-		testSession.executeRequest();
-		assertTrue(testSession.getCurrentText().equals("xb"));
+		StateVector laggyTestVector = testVectors.clone();
+		testSessionx.executeRequest();
+		assertTrue(testSessionx.getCurrentText().equals("xb"));
 
 		Request testRequest4 = new InsertRequest("User2", laggyTestVector, 3,
 				1, 'w');
-		testSession.receiveRequest(testRequest4);
-		testSession.executeRequest();
-		Set<StateVector> set = testSession.getDocMod().getVectors();
-		System.out.println("Docmod: "+set.size());
-		testSession.executeRequest();
-		System.out.println(testSession.getCurrentText());
+		testSessionx.receiveRequest(testRequest4);
+		testSessionx.executeRequest();
+		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
 
 	}
 
 	@Test
 	public void testGetRequest() {
 		Session testSession = new Session("Test", "TestDoc");
-		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
+		Request testRequestc = new InsertRequest("Test", new StateVector(), 0,
 				0, 'a');
-		testSession.receiveRequest(testRequest);
-		assertTrue(testSession.getRequest("Test", 0).equals(testRequest));
+		testSession.receiveRequest(testRequestc);
+		assertTrue(testSession.getRequest("Test", 0).equals(testRequestc));
 	}
 
 	@Test
@@ -77,14 +75,14 @@ public class SessionTest {
 		Session testSession = new Session("User1", "TestDoc");
 		StateVector testVector = new StateVector();
 		assertTrue(testSession.Reachable(testVector));
-		Request testRequest = new InsertRequest("Test", testVector, 0, 0, 'a');
-		testSession.receiveRequest(testRequest);
+		Request testRequestd = new InsertRequest("Test", testVector, 0, 0, 'a');
+		testSession.receiveRequest(testRequestd);
 		assertTrue(testSession.Reachable(new StateVector()));
 		assertTrue(testSession.Reachable(testSession.getCurrentState()));
 		assertFalse(testSession.Reachable(testSession.getCurrentState()
 				.incrementedUser("Test")));
-		Request testRequest2 = new InsertRequest("Test2", testVector, 0, 1, 'a');
-		testSession.receiveRequest(testRequest2);
+		Request e = new InsertRequest("Test2", testVector, 0, 1, 'a');
+		testSession.receiveRequest(e);
 		testVector.incrementUser("Test2");
 		assertTrue(testSession.Reachable(testVector));
 	}

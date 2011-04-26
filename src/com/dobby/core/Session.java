@@ -60,10 +60,10 @@ public class Session implements Runnable {
 			Request target = requestQueue.remove();
 			Request translated = translateRequest(target);
 			docMod.applyRequestToText(translated);
-			translated.getStateVector().incrementUser(translated.getUser());
-			docMod.addRequest(currentState, translated.getStateVector(),
+			StateVector incedUser = translated.getStateVector().incrementedUser(translated.getUser());
+			docMod.addRequest(currentState, incedUser,
 					translated);
-			currentState = translated.getStateVector();
+			currentState = incedUser;
 		}
 	}
 
@@ -92,31 +92,7 @@ public class Session implements Runnable {
 	 * @return translated request
 	 */
 	protected Request translateRequest(Request target) {
-		if (target.getStateVector().equals(currentState)) {
-			docMod.addRequest(currentState, target.getStateVector(), target);
-			return target;
-			// TODO Possibly implement else if
-		} else {
-			// note that previous state is guaranteed by the Ressel paper
-			// to return a user
-			String userToDec = previousState(target, currentState);
-			StateVector decVec = currentState.decrementedUser(userToDec);
-			// previous Request returning null request
-			Request previousRequest = getRequest(userToDec,
-					decVec.getUser(userToDec));
-			Request translatedPrevReq = translateRequest(previousRequest,
-					decVec);
-			Request translatedThisReq = translateRequest(target, decVec);
-			Request transformedPrevReq = translatedPrevReq
-					.transform(translatedThisReq);
-			Request transformedThisReq = translatedPrevReq
-					.transform(translatedPrevReq);
-			docMod.addRequest(currentState,
-					transformedPrevReq.getStateVector(), transformedPrevReq);
-			docMod.addRequest(currentState,
-					transformedThisReq.getStateVector(), transformedThisReq);
-			return transformedThisReq;
-		}
+		return translateRequest(target, currentState);
 	}
 
 	/**
@@ -138,6 +114,7 @@ public class Session implements Runnable {
 			StateVector decVec = state.decrementedUser(userToDec);
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
+			System.out.println(previousRequest.getStateVector().toString());
 			Request translatedPrevReq = translateRequest(previousRequest,
 					decVec);
 			Request translatedThisReq = translateRequest(target, decVec);
@@ -164,13 +141,13 @@ public class Session implements Runnable {
 	 */
 	private String previousState(Request target, StateVector curState) {
 		for (String user : curState.getUsers()) {
-
+			//TODO clean up
 			StateVector decUser = curState.decrementedUser(user);
 			boolean test = Reachable(decUser);
-
-			if (Reachable(decUser)
-					&& target.getStateVector().getUser(user) <= curState
-							.getUser(user) - 1) {
+			int number = target.getStateVector().getUser(user);
+			int number2 = curState.getUser(user) - 1;
+			boolean test2 = number <= number2;
+			if (test && test2) {
 				return user;
 			}
 		}
