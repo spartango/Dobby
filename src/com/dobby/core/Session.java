@@ -12,24 +12,31 @@ import java.util.Vector;
  * @author anand
  * 
  */
-public class Session implements Requestable {
+public class Session implements Runnable {
+	private int sleepTime = 5;
+	private boolean running;
+
 	private Queue<Request> requestQueue;
 	private Map<String, List<Request>> requestLog;
 	private StateVector currentState;
 	private DocumentModel docMod;
 	private String docName;
+	private String userName;
 
 	/**
 	 * Creates a new editing session for a document
 	 * 
 	 * @param docName
 	 */
-	public Session(String docName) {
+	public Session(String user, String docName) {
 		this.requestQueue = new LinkedList<Request>();
 		this.requestLog = new HashMap<String, List<Request>>();
 		this.docMod = new DocumentModel();
 		this.docName = docName;
 		this.currentState = docMod.getRoot();
+		this.userName = user;
+
+		running = false;
 	}
 
 	/**
@@ -37,7 +44,6 @@ public class Session implements Requestable {
 	 * 
 	 * @param r
 	 */
-	@Override
 	public synchronized void receiveRequest(Request r) {
 		requestQueue.add(r);
 		putRequestInLog(r);
@@ -55,6 +61,7 @@ public class Session implements Requestable {
 			Request translated = translateRequest(target);
 			docMod.applyRequestToText(translated);
 			translated.getStateVector().incrementUser(translated.getUser());
+			docMod.addRequest(currentState, translated.getStateVector(), translated);
 			currentState = translated.getStateVector();
 		}
 	}
@@ -64,7 +71,7 @@ public class Session implements Requestable {
 	 * 
 	 * @return
 	 */
-	public boolean isRequestQueueEmpty() {
+	public synchronized boolean isRequestQueueEmpty() {
 		return requestQueue.isEmpty();
 	}
 
@@ -73,7 +80,7 @@ public class Session implements Requestable {
 	 * 
 	 * @return
 	 */
-	public int getRequestQueueLength() {
+	public synchronized int getRequestQueueLength() {
 		return requestQueue.size();
 	}
 
@@ -254,7 +261,7 @@ public class Session implements Requestable {
 	 * 
 	 * @param r
 	 */
-	protected void putRequestInLog(Request r) {
+	private void putRequestInLog(Request r) {
 		if (requestLog.containsKey(r.user)) {
 			List<Request> userLog = requestLog.get(r.user);
 			userLog.add(r);
@@ -263,7 +270,48 @@ public class Session implements Requestable {
 			userLog.add(r);
 			requestLog.put(r.getUser(), userLog);
 		}
+	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	@Override
+	public void run() {
+		running = true;
+
+		while (running) {
+			executeRequest();
+			pause();
+		}
+		
+		cleanup();
+	}
+
+	private void cleanup() {
+		//Any cleanup should be done here
+	}
+
+	private void pause() {
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException e) {
+				stop();
+			}
+		}
+	}
+
+	public void stop() {
+		running = false;
+	}
+
+	public int getSleepTime() {
+		return sleepTime;
+	}
+
+	public void setSleepTime(int sleepTime) {
+		this.sleepTime = sleepTime;
 	}
 
 }

@@ -14,7 +14,7 @@ public class SessionTest {
 
 	@Test
 	public void testReceiveRequest() {
-		Session testSession = new Session("TestDoc");
+		Session testSession = new Session("Test", "TestDoc");
 		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
 				0, 'a');
 		testSession.receiveRequest(testRequest);
@@ -34,7 +34,7 @@ public class SessionTest {
 
 	@Test
 	public void testGetRequest() {
-		Session testSession = new Session("TestDoc");
+		Session testSession = new Session("Test", "TestDoc");
 		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
 				0, 'a');
 		testSession.receiveRequest(testRequest);
