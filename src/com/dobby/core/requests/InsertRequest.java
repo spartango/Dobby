@@ -12,8 +12,9 @@ import com.dobby.core.StateVector;
  */
 public class InsertRequest extends Request {
 
-	private static final int SEED = 23; 
+	private static final int SEED = 23;
 	private static final int START_SEED = 31;
+
 	/**
 	 * Creates a new InsertRequest with the supplied state
 	 * 
@@ -29,22 +30,22 @@ public class InsertRequest extends Request {
 	}
 
 	/**
-	 * Note: Differs slightly from the algorithm, as users are strings in our
-	 * case. This does not affect the correctness of the algorithm but merely
-	 * allows user2 to always insert before user1. Transforms this request with
+	 * Transforms this request with
 	 * respect to another request based on transformation rules from CA Ellis
 	 * 1989 "Concurrency control in groupware systems." and M Ressel 1996 "An
 	 * Integrating, Transformation-Oriented Approach to Concurrency Control and
 	 * Undo in Group Editors" if this position is before the target, then no
 	 * transform performed else if the target is an insert, shift this right
-	 * one, else if the target is a delete, shift this left one.
+	 * one, else if the target is a delete, shift this left one. 
 	 * 
 	 * @param r
 	 */
 	@Override
 	public Request transform(Request r) {
 		Request desired = null;
-		if (position < r.getPosition())
+		if (position < r.getPosition()
+				|| (position == r.getPosition() && r.getUser().hashCode() < user
+						.hashCode())) //handles equivalence case by comparison
 			desired = this.clone();
 		else if (r instanceof InsertRequest) {
 			desired = new InsertRequest(this.user, this.stateVector,
@@ -78,7 +79,7 @@ public class InsertRequest extends Request {
 				character);
 	}
 
-	public int hashCode(){
+	public int hashCode() {
 		int hash = START_SEED;
 		hash = hash * SEED + this.user.hashCode();
 		hash = hash * SEED + this.serialNumber;

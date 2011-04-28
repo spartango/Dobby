@@ -3,8 +3,6 @@ package com.dobby.tests.core;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
-
 import org.junit.Test;
 
 import com.dobby.core.Request;
@@ -13,6 +11,15 @@ import com.dobby.core.StateVector;
 import com.dobby.core.requests.InsertRequest;
 
 public class SessionTest {
+
+	@Test
+	public void testLog() {
+		Session testSession = new Session("Test", "TestDoc");
+		Request testRequest = new InsertRequest("Test", new StateVector(), 0,
+				0, 'a');
+		testSession.receiveRequest(testRequest);
+		testSession.getRequest("Test", 0);
+	}
 
 	@Test
 	public void testReceiveRequest() {
@@ -58,6 +65,7 @@ public class SessionTest {
 				0, 'w');
 		testSessionx.receiveRequest(testRequest4);
 		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
 		testSessionx.executeRequest();
 		System.out.println(testSessionx.getCurrentText());
 		assertTrue(testSessionx.getCurrentText().equals("wxby"));

@@ -119,7 +119,7 @@ public class Session implements Runnable {
 			Request translatedThisReq = translateRequest(target, decVec);
 			Request transformedPrevReq = translatedPrevReq
 					.transform(translatedThisReq);
-			Request transformedThisReq = translatedPrevReq
+			Request transformedThisReq = translatedThisReq
 					.transform(translatedPrevReq);
 			docMod.addRequest(state, transformedPrevReq.getStateVector(),
 					transformedPrevReq);
