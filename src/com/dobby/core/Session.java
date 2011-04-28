@@ -225,7 +225,7 @@ public class Session implements Runnable {
 		}
 		return desired;
 	}
-	
+
 	/**
 	 * Same purpose as the function above, however this checks to see if a given
 	 * StateVector is in the interaction model. This makes it easier to
@@ -237,9 +237,10 @@ public class Session implements Runnable {
 	 */
 	public boolean reachable(StateVector target) {
 		Set<String> users = target.getUsers();
-		for(String u : users){
-			StateVector appliedVector = getRequest(u, target.getUser(u)).getStateVector().incrementedUser(u);
-			if(target.getUser(u) != 0 && appliedVector.greaterThan(target))
+		for (String u : users) {
+			if (target.getUser(u) != 0
+					&& getRequest(u, target.getUser(u) - 1).getStateVector()
+							.incrementedUser(u).greaterThan(target))
 				return false;
 		}
 		return true;

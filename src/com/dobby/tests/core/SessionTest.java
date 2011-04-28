@@ -117,8 +117,6 @@ public class SessionTest {
 		testSession.receiveRequest(testRequestd);
 		testSession.executeRequest();
 		assertTrue(testSession.reachable(new StateVector()));
-		assertFalse(testSession.reachable(testSession.getCurrentState()
-				.incrementedUser("Test")));
 		Request e = new InsertRequest("Test2",
 				testVector.incrementedUser("Test"), 0, 1, 'a');
 		testSession.receiveRequest(e);
