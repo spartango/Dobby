@@ -93,18 +93,42 @@ public class InsertRequest extends Request {
 	}
 
 	@Override
-	public JSONObject toJSON() {
-		JSONObject obj = new JSONObject();
+	protected void populateJSON(JSONObject obj) {
 		try {
 			obj.put("op", "Ins");
-			obj.put("user", user);
-			obj.put("serial", serialNumber);
 			obj.put("char", this.character);
 			obj.put("pos", this.position);
-			obj.put("state", stateVector.toJSON());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return obj;
+	}
+
+	public static InsertRequest fromJSON(JSONObject obj) throws JSONException {
+		InsertRequest request = null;
+
+		String userName = null;
+		char charName = (char) (0);
+		int pos = -1;
+		StateVector state = null;
+		int serial = -1;
+
+		if (obj.has("user")) {
+			userName = obj.getString(userName);
+		}
+		if (obj.has("char")) {
+			charName = obj.getString("char").charAt(0);
+		}
+		if (obj.has("pos")) {
+			pos = obj.getInt("pos");
+		}
+		if (obj.has("serial")) {
+			serial = obj.getInt("serial");
+		}
+		if (obj.has("state")) {
+			state = StateVector.fromJSON(obj.getJSONObject("state"));
+		}
+		
+		request = new InsertRequest(userName, state, serial, pos, charName);
+		return request;
 	}
 }

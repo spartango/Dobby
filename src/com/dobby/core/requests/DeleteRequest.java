@@ -83,8 +83,8 @@ public class DeleteRequest extends Request {
 		return new DeleteRequest(user, stateVector, serialNumber, position,
 				character);
 	}
-	
-	public int hashCode(){
+
+	public int hashCode() {
 		int hash = START_SEED;
 		hash = hash * SEED + this.user.hashCode();
 		hash = hash * SEED + this.serialNumber;
@@ -93,20 +93,44 @@ public class DeleteRequest extends Request {
 		hash = hash * SEED + this.position;
 		return hash;
 	}
-	
+
 	@Override
-	public JSONObject toJSON() {
-		JSONObject obj = new JSONObject();
+	protected void populateJSON(JSONObject obj) {
 		try {
 			obj.put("op", "Del");
-			obj.put("user", user);
-			obj.put("serial", serialNumber);
 			obj.put("char", this.character);
 			obj.put("pos", this.position);
-			obj.put("state", stateVector.toJSON());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return obj;
+	}
+
+	public static DeleteRequest fromJSON(JSONObject obj) throws JSONException {
+		DeleteRequest request = null;
+
+		String userName = null;
+		char charName = (char) (0);
+		int pos = -1;
+		StateVector state = null;
+		int serial = -1;
+
+		if (obj.has("user")) {
+			userName = obj.getString(userName);
+		}
+		if (obj.has("char")) {
+			charName = obj.getString("char").charAt(0);
+		}
+		if (obj.has("pos")) {
+			pos = obj.getInt("pos");
+		}
+		if (obj.has("serial")) {
+			serial = obj.getInt("serial");
+		}
+		if (obj.has("state")) {
+			state = StateVector.fromJSON(obj.getJSONObject("state"));
+		}
+
+		request = new DeleteRequest(userName, state, serial, pos, charName);
+		return request;
 	}
 }

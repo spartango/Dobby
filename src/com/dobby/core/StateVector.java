@@ -208,4 +208,9 @@ public class StateVector implements Cloneable {
 		return obj;
 	}
 
+	public static StateVector fromJSON(JSONObject jsonObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

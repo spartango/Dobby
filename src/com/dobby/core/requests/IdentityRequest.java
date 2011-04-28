@@ -10,6 +10,7 @@ public class IdentityRequest extends Request {
 
 	private static final int SEED = 31;
 	private static final int START_SEED = 23;
+
 	/**
 	 * Creates a new Identity Request with the supplied state Note that the
 	 * position and character fields are populated as invalid/nul
@@ -54,18 +55,36 @@ public class IdentityRequest extends Request {
 		hash = hash * SEED + this.stateVector.hashCode();
 		return hash;
 	}
-	
-	@Override
-	public JSONObject toJSON() {
-		JSONObject obj = new JSONObject();
+
+	protected void populateJSON(JSONObject obj) {
 		try {
 			obj.put("op", "Id");
-			obj.put("user", user);
-			obj.put("serial", serialNumber);
-			obj.put("state", stateVector.toJSON());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return obj;
 	}
+
+	public static IdentityRequest fromJSON(JSONObject obj) throws JSONException {
+		IdentityRequest request = null;
+
+		String userName = null;
+		char charName = (char) (0);
+		int pos = -1;
+		StateVector state = null;
+		int serial = -1;
+
+		if (obj.has("user")) {
+			userName = obj.getString(userName);
+		}
+		if (obj.has("serial")) {
+			serial = obj.getInt("serial");
+		}
+		if (obj.has("state")) {
+			state = StateVector.fromJSON(obj.getJSONObject("state"));
+		}
+
+		request = new IdentityRequest(userName, state, serial);
+		return request;
+	}
+
 }

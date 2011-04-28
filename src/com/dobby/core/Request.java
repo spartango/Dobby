@@ -1,5 +1,6 @@
 package com.dobby.core;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -8,7 +9,7 @@ import org.json.JSONObject;
  * 
  * @author anand
  */
-public abstract class Request implements Cloneable{
+public abstract class Request implements Cloneable {
 	protected String user;
 	protected StateVector stateVector;
 	protected int serialNumber;
@@ -97,7 +98,28 @@ public abstract class Request implements Cloneable{
 
 	@Override
 	public abstract int hashCode();
-	
-	public abstract JSONObject toJSON();
 
+	public JSONObject toLightJSON() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("user", user);
+			obj.put("serial", serialNumber);
+			populateJSON(obj);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	public JSONObject toJSON() {
+		JSONObject obj = toLightJSON();
+		try {
+			obj.put("state", stateVector.toJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	protected abstract void populateJSON(JSONObject obj);
 }
