@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.dobby.core.Request;
 import com.dobby.core.Session;
 import com.dobby.core.StateVector;
+import com.dobby.core.requests.DeleteRequest;
 import com.dobby.core.requests.InsertRequest;
 
 public class SessionTest {
@@ -83,7 +84,19 @@ public class SessionTest {
 		testSessionx.executeRequest();
 		System.out.println(testSessionx.getCurrentText());
 		assertTrue(testSessionx.getCurrentText().equals("wrxaby"));
-
+		
+		Request testRequest7 = new DeleteRequest("User2", 
+				testSessionx.getCurrentState().clone(), 6, 1, 'r');
+		testSessionx.receiveRequest(testRequest7);
+		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
+		assertTrue(testSessionx.getCurrentText().equals("wxaby"));
+		
+		Request testRequest8 = new DeleteRequest("User2",
+				testRequest6.getStateVector().clone(), 7, 2, 'x');
+		testSessionx.receiveRequest(testRequest);
+		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
 	}
 
 	@Test
