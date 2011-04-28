@@ -122,4 +122,8 @@ public abstract class Request implements Cloneable {
 	}
 
 	protected abstract void populateJSON(JSONObject obj);
+
+	public String toString() {
+		return toJSON().toString();
+	}
 }

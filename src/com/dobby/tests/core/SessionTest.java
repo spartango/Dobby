@@ -93,8 +93,8 @@ public class SessionTest {
 		assertTrue(testSessionx.getCurrentText().equals("wxaby"));
 		
 		Request testRequest8 = new DeleteRequest("User2",
-				testRequest6.getStateVector().clone(), 7, 2, 'x');
-		testSessionx.receiveRequest(testRequest);
+				testRequest3.getStateVector().clone(), 7, 0, 'x');
+		testSessionx.receiveRequest(testRequest8);
 		testSessionx.executeRequest();
 		System.out.println(testSessionx.getCurrentText());
 	}
@@ -112,18 +112,17 @@ public class SessionTest {
 	public void testReachable() {
 		Session testSession = new Session("User1", "TestDoc");
 		StateVector testVector = new StateVector();
-		assertTrue(testSession.Reachable(testVector));
+		assertTrue(testSession.reachable(testVector));
 		Request testRequestd = new InsertRequest("Test", testVector, 0, 0, 'a');
 		testSession.receiveRequest(testRequestd);
 		testSession.executeRequest();
-		assertTrue(testSession.Reachable(new StateVector()));
-		assertTrue(testSession.Reachable(testSession.getCurrentState()));
-		assertFalse(testSession.Reachable(testSession.getCurrentState()
+		assertTrue(testSession.reachable(new StateVector()));
+		assertFalse(testSession.reachable(testSession.getCurrentState()
 				.incrementedUser("Test")));
 		Request e = new InsertRequest("Test2",
 				testVector.incrementedUser("Test"), 0, 1, 'a');
 		testSession.receiveRequest(e);
 		testSession.executeRequest();
-		assertTrue(testSession.Reachable(testVector.incrementedUser("Test")));
+		assertTrue(testSession.reachable(testVector.incrementedUser("Test")));
 	}
 }

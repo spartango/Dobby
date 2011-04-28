@@ -213,4 +213,16 @@ public class StateVector implements Cloneable {
 		return null;
 	}
 
+	public boolean greaterThan(StateVector beta) {
+		for (String user : this.getUsers()) {
+			if (this.getUser(user) <= beta.getUser(user))
+				return false;
+		}
+		for (String user : beta.getUsers()) {
+			if (this.getUser(user) <= beta.getUser(user))
+				return false;
+		}
+		return true;
+	}
+
 }

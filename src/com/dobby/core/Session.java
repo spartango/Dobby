@@ -1,11 +1,15 @@
 package com.dobby.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Vector;
+
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User;
 
 /**
  * 
@@ -19,9 +23,11 @@ public class Session implements Runnable {
 	private Queue<Request> requestQueue;
 	private Map<String, List<Request>> requestLog;
 	private StateVector currentState;
-	private DocumentModel docMod;
+	private Set<Request> docMod;
 	private String docName;
 	private String userName;
+
+	private String docText;
 
 	/**
 	 * Creates a new editing session for a document
@@ -31,11 +37,11 @@ public class Session implements Runnable {
 	public Session(String user, String docName) {
 		this.requestQueue = new LinkedList<Request>();
 		this.requestLog = new HashMap<String, List<Request>>();
-		this.docMod = new DocumentModel();
+		this.docMod = new HashSet<Request>();
 		this.docName = docName;
-		this.currentState = docMod.getRoot();
+		this.currentState = new StateVector();
 		this.userName = user;
-
+		this.docText = "";
 		running = false;
 	}
 
@@ -59,14 +65,17 @@ public class Session implements Runnable {
 		if (!isRequestQueueEmpty()) {
 			Request target = requestQueue.remove();
 			Request translated = translateRequest(target);
-			docMod.applyRequestToText(translated);
+			applyRequestToText(translated);
 			// No matter how the translation goes, we should just be pushing
 			// The current state vector forward, and attaching things around it.
 			StateVector incedUser = currentState.incrementedUser(translated
 					.getUser());
-			docMod.addRequest(currentState, incedUser, translated);
 			currentState = incedUser;
 		}
+	}
+
+	private void applyRequestToText(Request translated) {
+		docText = translated.apply(docText);
 	}
 
 	/**
@@ -107,7 +116,7 @@ public class Session implements Runnable {
 	 */
 	protected Request translateRequest(Request target, StateVector state) {
 		if (target.getStateVector().equals(state)) {
-			docMod.addRequest(state, target.getStateVector(), target);
+			addToModel(target);
 			return target;
 		} else {
 			// note that previous state is guaranteed by the Ressel paper
@@ -123,13 +132,15 @@ public class Session implements Runnable {
 					.transform(translatedThisReq);
 			Request transformedThisReq = translatedThisReq
 					.transform(translatedPrevReq);
-			docMod.addRequest(state, transformedPrevReq.getStateVector(),
-					transformedPrevReq);
-			docMod.addRequest(state, transformedThisReq.getStateVector(),
-					transformedThisReq);
+			addToModel(transformedPrevReq);
+			addToModel(transformedThisReq);
 			return transformedThisReq;
 
 		}
+	}
+
+	private void addToModel(Request r) {
+		docMod.add(r);
 	}
 
 	/**
@@ -143,7 +154,7 @@ public class Session implements Runnable {
 	private String previousState(Request target, StateVector curState) {
 		for (String user : curState.getUsers()) {
 			StateVector decUser = curState.decrementedUser(user);
-			if (Reachable(decUser)
+			if (reachable(decUser)
 					&& (target.getStateVector().getUser(user) <= (curState
 							.getUser(user) - 1))) {
 				return user;
@@ -166,7 +177,7 @@ public class Session implements Runnable {
 	 * @return
 	 */
 	public String getCurrentText() {
-		return docMod.getText();
+		return docText;
 	}
 
 	/**
@@ -214,16 +225,7 @@ public class Session implements Runnable {
 		}
 		return desired;
 	}
-
-	/**
-	 * 
-	 * @param target
-	 * @return
-	 */
-	public boolean Reachable(Request target) {
-		return docMod.containsRequest(target);
-	}
-
+	
 	/**
 	 * Same purpose as the function above, however this checks to see if a given
 	 * StateVector is in the interaction model. This makes it easier to
@@ -233,8 +235,18 @@ public class Session implements Runnable {
 	 * previous function around so possibly delete the Request version after
 	 * implementation of translate request.
 	 */
-	public boolean Reachable(StateVector target) {
-		return docMod.containsState(target);
+	public boolean reachable(StateVector target) {
+		return modelContainsState(target);
+	}
+
+	private boolean modelContainsState(StateVector target) {
+		Set<String> users = target.getUsers();
+		for(String u : users){
+			StateVector appliedVector = getRequest(u, target.getUser(u)).getStateVector().incrementedUser(u);
+			if(target.getUser(u) != 0 && appliedVector.greaterThan(target))
+				return false;
+		}
+		return true;
 	}
 
 	/**
@@ -295,7 +307,7 @@ public class Session implements Runnable {
 		this.sleepTime = sleepTime;
 	}
 
-	public DocumentModel getDocMod() {
+	public Set<Request> getDocMod() {
 		return docMod;
 	}
 
