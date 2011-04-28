@@ -70,6 +70,20 @@ public class SessionTest {
 		System.out.println(testSessionx.getCurrentText());
 		assertTrue(testSessionx.getCurrentText().equals("wxby"));
 
+		Request testRequest5 = new InsertRequest("User3", testSessionx
+				.getCurrentState().clone(), 5, 1, 'r');
+		testSessionx.receiveRequest(testRequest5);
+		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
+		assertTrue(testSessionx.getCurrentText().equals("wrxby"));
+
+		Request testRequest6 = new InsertRequest("User6",
+				testRequest3.getStateVector(), 5, 1, 'a');
+		testSessionx.receiveRequest(testRequest6);
+		testSessionx.executeRequest();
+		System.out.println(testSessionx.getCurrentText());
+		assertTrue(testSessionx.getCurrentText().equals("wrxaby"));
+
 	}
 
 	@Test

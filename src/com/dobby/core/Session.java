@@ -60,8 +60,10 @@ public class Session implements Runnable {
 			Request target = requestQueue.remove();
 			Request translated = translateRequest(target);
 			docMod.applyRequestToText(translated);
-			StateVector incedUser = translated.getStateVector()
-					.incrementedUser(translated.getUser());
+			// No matter how the translation goes, we should just be pushing
+			// The current state vector forward, and attaching things around it.
+			StateVector incedUser = currentState.incrementedUser(translated
+					.getUser());
 			docMod.addRequest(currentState, incedUser, translated);
 			currentState = incedUser;
 		}
