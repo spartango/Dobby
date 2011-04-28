@@ -1,5 +1,8 @@
 package com.dobby.core.requests;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 
@@ -89,5 +92,21 @@ public class DeleteRequest extends Request {
 		hash = hash * SEED + this.character;
 		hash = hash * SEED + this.position;
 		return hash;
+	}
+	
+	@Override
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("op", "Del");
+			obj.put("user", user);
+			obj.put("serial", serialNumber);
+			obj.put("char", this.character);
+			obj.put("pos", this.position);
+			obj.put("state", stateVector.toJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 }

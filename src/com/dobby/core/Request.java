@@ -1,12 +1,14 @@
 package com.dobby.core;
 
+import org.json.JSONObject;
+
 /**
  * A representation of a request for a change, complete with the state of the
  * system when the request is made
  * 
  * @author anand
  */
-public abstract class Request implements Cloneable {
+public abstract class Request implements Cloneable{
 	protected String user;
 	protected StateVector stateVector;
 	protected int serialNumber;
@@ -95,5 +97,7 @@ public abstract class Request implements Cloneable {
 
 	@Override
 	public abstract int hashCode();
+	
+	public abstract JSONObject toJSON();
 
 }

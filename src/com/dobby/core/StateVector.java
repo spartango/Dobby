@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 public class StateVector implements Cloneable {
 
 	private Map<String, Integer> vector;
@@ -199,6 +201,11 @@ public class StateVector implements Cloneable {
 
 	public String toString() {
 		return vector.toString();
+	}
+
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject(vector);
+		return obj;
 	}
 
 }

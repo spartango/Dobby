@@ -1,5 +1,8 @@
 package com.dobby.core.requests;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 
@@ -30,13 +33,13 @@ public class InsertRequest extends Request {
 	}
 
 	/**
-	 * Transforms this request with
-	 * respect to another request based on transformation rules from CA Ellis
-	 * 1989 "Concurrency control in groupware systems." and M Ressel 1996 "An
+	 * Transforms this request with respect to another request based on
+	 * transformation rules from CA Ellis 1989
+	 * "Concurrency control in groupware systems." and M Ressel 1996 "An
 	 * Integrating, Transformation-Oriented Approach to Concurrency Control and
 	 * Undo in Group Editors" if this position is before the target, then no
 	 * transform performed else if the target is an insert, shift this right
-	 * one, else if the target is a delete, shift this left one. 
+	 * one, else if the target is a delete, shift this left one.
 	 * 
 	 * @param r
 	 */
@@ -45,7 +48,7 @@ public class InsertRequest extends Request {
 		Request desired = null;
 		if (position < r.getPosition()
 				|| (position == r.getPosition() && r.getUser().hashCode() < user
-						.hashCode())) //handles equivalence case by comparison
+						.hashCode())) // handles equivalence case by comparison
 			desired = this.clone();
 		else if (r instanceof InsertRequest) {
 			desired = new InsertRequest(this.user, this.stateVector,
@@ -87,5 +90,21 @@ public class InsertRequest extends Request {
 		hash = hash * SEED + this.character;
 		hash = hash * SEED + this.position;
 		return hash;
+	}
+
+	@Override
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("op", "Ins");
+			obj.put("user", user);
+			obj.put("serial", serialNumber);
+			obj.put("char", this.character);
+			obj.put("pos", this.position);
+			obj.put("state", stateVector.toJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 }

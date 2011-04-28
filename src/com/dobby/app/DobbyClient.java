@@ -27,11 +27,23 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 			session = new Session(username, document);
 			registerClient(document);
 			syncState(document);
+			startSession();
+			start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void start() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void startSession() {
+		// TODO Auto-generated method stub
+
 	}
 
 	private void syncState(String document) {

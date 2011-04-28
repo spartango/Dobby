@@ -1,5 +1,8 @@
 package com.dobby.core.requests;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.dobby.core.Request;
 import com.dobby.core.StateVector;
 
@@ -50,5 +53,19 @@ public class IdentityRequest extends Request {
 		hash = hash * SEED + this.serialNumber;
 		hash = hash * SEED + this.stateVector.hashCode();
 		return hash;
+	}
+	
+	@Override
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("op", "Id");
+			obj.put("user", user);
+			obj.put("serial", serialNumber);
+			obj.put("state", stateVector.toJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 }
