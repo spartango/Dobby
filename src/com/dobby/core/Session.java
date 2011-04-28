@@ -236,10 +236,6 @@ public class Session implements Runnable {
 	 * implementation of translate request.
 	 */
 	public boolean reachable(StateVector target) {
-		return modelContainsState(target);
-	}
-
-	private boolean modelContainsState(StateVector target) {
 		Set<String> users = target.getUsers();
 		for(String u : users){
 			StateVector appliedVector = getRequest(u, target.getUser(u)).getStateVector().incrementedUser(u);
