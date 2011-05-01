@@ -6,6 +6,7 @@ import java.net.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.dobby.app.comm.BroadcastListener;
 import com.dobby.core.Request;
 import com.dobby.core.Session;
 import com.dobby.core.requests.DeleteRequest;
@@ -23,60 +24,71 @@ import com.spartango.network.AsyncSocket;
  * 
  */
 public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
-		Runnable {
+		BroadcastListener {
+	private DobbyServer server;
 
 	private Session session;
 	private AsyncSocket connection;
 
-	public DobbyClient(Socket sock, String document, String username)
-			throws IOException {
-		this(new AsyncSocket(sock), document, username);
+	private Thread sessionThread;
+
+	public DobbyClient(DobbyServer server, Socket sock, String document,
+			String username) throws IOException {
+		this(server, new AsyncSocket(sock), document, username);
 	}
 
-	public DobbyClient(AsyncSocket socket, String document, String username) {
+	public DobbyClient(DobbyServer server, AsyncSocket socket, String document,
+			String username) {
+		this.server = server;
 		connection = socket;
 		session = new Session(username, document);
-		registerClient(document);
-		syncState(document);
+		registerClient();
+		syncState();
 		startSession();
-		start();
-
-	}
-
-	private void start() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void startSession() {
-		// TODO Auto-generated method stub
+		sessionThread = new Thread(session);
+		sessionThread.start();
+	}
+
+	private void syncState() {
+		JSONObject payload = new JSONObject();
+		try {
+			payload.put("op", "sync");
+			payload.put("text", session.getCurrentText());
+			connection.send(payload.toString(), this);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 	}
 
-	private void syncState(String document) {
-		// TODO send document text over the wire
-	}
-
-	private void registerClient(String document) {
-		// TODO implement addition to server broadcast
+	private void registerClient() {
+		server.registerClient(session.getUserName(), this);
 	}
 
 	@Override
-	public void onWriteSuccess(AsyncWriteEvent e) {
-		// TODO Auto-generated method stub
-
+	public void onWriteSuccess(AsyncWriteEvent e) { /* Successful send */
 	}
 
 	@Override
 	public void onWriteFailure(AsyncWriteEvent e) {
 		// TODO Decide if a resend is necessary
-
 	}
 
 	@Override
-	public void onWriterClosed(AsyncWriteEvent e) {
-		// TODO Auto-generated method stub
+	public void onWriterClosed(AsyncWriteEvent e) { // Disconnected
+		// TODO try and reconnect
 
+		// Exit safely
+		stop();
+	}
+
+	private void stop() {
+		server.releaseClient(session.getUserName());
+		connection.close();
+		session.stop();
 	}
 
 	@Override
@@ -92,7 +104,6 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	private void handleMessage(JSONObject message) throws JSONException {
-		// TODO separate data by purpose & handle
 		if (message.getString("op").equals("Ins")) {
 			InsertRequest request = InsertRequest.fromJSON(message);
 			handleRequest(request);
@@ -103,9 +114,11 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 			IdentityRequest request = IdentityRequest.fromJSON(message);
 			handleRequest(request);
 		} else if (message.getString("op").equals("sync")) {
-			// TODO sync state
+			// This is a request for the document text
+			syncState();
 		} else if (message.getString("op").equals("register")) {
-			// TODO register
+			// This is a broadcast signup
+			registerClient();
 		}
 	}
 
@@ -115,24 +128,25 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	@Override
-	public void onReceiveFailed(AsyncReadEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onReceiveFailed(AsyncReadEvent e) { }
 
 	@Override
 	public void onReaderClosed(AsyncReadEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
+		this.stop();
 	}
 
 	private void broadcastRequest(Request r) {
-		// TODO setup a mechanism for broadcasting events.
+		server.broadcastRequest(r);
 	}
+
+	@Override
+	public void onBroadcastReceived(Request r) {
+		session.receiveRequest(r);
+	}
+
+	@Override
+	public void onProviderClosed() {
+		this.stop();
+	}
+
 }
