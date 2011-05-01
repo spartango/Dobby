@@ -68,8 +68,6 @@ public class IdentityRequest extends Request {
 		IdentityRequest request = null;
 
 		String userName = null;
-		char charName = (char) (0);
-		int pos = -1;
 		StateVector state = null;
 		int serial = -1;
 

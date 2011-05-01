@@ -14,14 +14,15 @@ import java.util.Vector;
  * @author anand
  * 
  */
-public class Session implements Runnable {
+public class Session implements Runnable, Cloneable {
 	private int sleepTime = 5;
 	private boolean running;
+	private Thread sessionThread;
 
 	private Queue<Request> requestQueue;
-	private Map<String, List<Request>> requestLog;
+	private HashMap<String, List<Request>> requestLog;
 	private StateVector currentState;
-	private Set<Request> docMod;
+	private HashSet<Request> docMod;
 	private String docName;
 	private String userName;
 
@@ -41,6 +42,13 @@ public class Session implements Runnable {
 		this.userName = user;
 		this.docText = "";
 		running = false;
+		sessionThread = new Thread(this);
+		start();
+	}
+
+	public void start() {
+		if (!running)
+			sessionThread.start();
 	}
 
 	/**
@@ -72,7 +80,7 @@ public class Session implements Runnable {
 		}
 	}
 
-	private void applyRequestToText(Request translated) {
+	private synchronized void applyRequestToText(Request translated) {
 		docText = translated.apply(docText);
 	}
 
@@ -90,7 +98,7 @@ public class Session implements Runnable {
 	 * 
 	 * @return
 	 */
-	public synchronized int getRequestQueueLength() {
+	public int getRequestQueueLength() {
 		return requestQueue.size();
 	}
 
@@ -145,7 +153,7 @@ public class Session implements Runnable {
 		}
 	}
 
-	private void addToModel(Request r) {
+	private synchronized void addToModel(Request r) {
 		docMod.add(r);
 	}
 
@@ -205,7 +213,7 @@ public class Session implements Runnable {
 	}
 
 	/**
-	 * Gets the number of requests recieved from a user
+	 * Gets the number of requests received from a user
 	 * 
 	 * @param user
 	 * @return
@@ -257,7 +265,7 @@ public class Session implements Runnable {
 	 * 
 	 * @param r
 	 */
-	private void putRequestInLog(Request r) {
+	private synchronized void putRequestInLog(Request r) {
 		if (requestLog.containsKey(r.user)) {
 			List<Request> userLog = requestLog.get(r.user);
 			userLog.add(r);
@@ -310,8 +318,36 @@ public class Session implements Runnable {
 		this.sleepTime = sleepTime;
 	}
 
-	public Set<Request> getDocMod() {
-		return docMod;
+	public boolean isRunning() {
+		return running;
 	}
 
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	private HashMap<String, List<Request>> requestLogCopy() {
+		HashMap<String, List<Request>> copy = new HashMap<String, List<Request>>();
+		for (String s : requestLog.keySet()) {
+			Vector<Request> newList = new Vector<Request>();
+			for (Request r : requestLog.get(s)) {
+				newList.add(r);
+			}
+			copy.put(s, newList);
+		}
+		return copy;
+	}
+
+	public Session clone() {
+		Session newSession = new Session(userName, docName);
+		HashSet<Request> cloneSet = (HashSet<Request>) docMod.clone();
+		newSession.docMod = cloneSet;
+		newSession.docText = docText;
+		newSession.requestLog = requestLogCopy();
+		Queue<Request> cloneQueue = (Queue<Request>) ((LinkedList<Request>) requestQueue)
+				.clone();
+		newSession.requestQueue = cloneQueue;
+		newSession.currentState = currentState.clone();
+		return newSession;
+	}
 }

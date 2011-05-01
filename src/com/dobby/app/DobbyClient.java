@@ -2,6 +2,10 @@ package com.dobby.app;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +13,7 @@ import org.json.JSONObject;
 import com.dobby.app.comm.BroadcastListener;
 import com.dobby.core.Request;
 import com.dobby.core.Session;
+import com.dobby.core.StateVector;
 import com.dobby.core.requests.DeleteRequest;
 import com.dobby.core.requests.IdentityRequest;
 import com.dobby.core.requests.InsertRequest;
@@ -30,38 +35,15 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	private Session session;
 	private AsyncSocket connection;
 
-	private Thread sessionThread;
-
-	public DobbyClient(DobbyServer server, Socket sock, String document,
-			String username) throws IOException {
-		this(server, new AsyncSocket(sock), document, username);
+	public DobbyClient(DobbyServer server, Socket sock, String document)
+			throws IOException {
+		this(server, new AsyncSocket(sock), document);
 	}
 
-	public DobbyClient(DobbyServer server, AsyncSocket socket, String document,
-			String username) {
+	public DobbyClient(DobbyServer server, AsyncSocket socket, String document) {
 		this.server = server;
 		connection = socket;
-		session = new Session(username, document);
 		registerClient();
-		syncState();
-		startSession();
-	}
-
-	private void startSession() {
-		sessionThread = new Thread(session);
-		sessionThread.start();
-	}
-
-	private void syncState() {
-		JSONObject payload = new JSONObject();
-		try {
-			payload.put("op", "sync");
-			payload.put("text", session.getCurrentText());
-			connection.send(payload.toString(), this);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	private void registerClient() {
@@ -69,7 +51,8 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	@Override
-	public void onWriteSuccess(AsyncWriteEvent e) { /* Successful send */
+	public void onWriteSuccess(AsyncWriteEvent e) {
+		/* Successful send */
 	}
 
 	@Override
@@ -80,15 +63,16 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	@Override
 	public void onWriterClosed(AsyncWriteEvent e) { // Disconnected
 		// TODO try and reconnect
-
 		// Exit safely
 		stop();
 	}
 
 	private void stop() {
-		server.releaseClient(session.getUserName());
+		if (session != null) {
+			server.releaseClient(session.getUserName());
+			session.stop();
+		}
 		connection.close();
-		session.stop();
 	}
 
 	@Override
@@ -104,31 +88,38 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	private void handleMessage(JSONObject message) throws JSONException {
-		if (message.getString("op").equals("Ins")) {
-			InsertRequest request = InsertRequest.fromJSON(message);
-			handleRequest(request);
-		} else if (message.getString("op").equals("Del")) {
-			DeleteRequest request = DeleteRequest.fromJSON(message);
-			handleRequest(request);
-		} else if (message.getString("op").equals("Id")) {
-			IdentityRequest request = IdentityRequest.fromJSON(message);
-			handleRequest(request);
-		} else if (message.getString("op").equals("sync")) {
-			// This is a request for the document text
-			syncState();
-		} else if (message.getString("op").equals("register")) {
-			// This is a broadcast signup
-			registerClient();
+		if (session != null) { // Session must be sync'd!
+			if (message.getString("op").equals("Ins")) {
+				InsertRequest request = InsertRequest.fromJSON(message);
+				handleRequest(request);
+			} else if (message.getString("op").equals("Del")) {
+				DeleteRequest request = DeleteRequest.fromJSON(message);
+				handleRequest(request);
+			} else if (message.getString("op").equals("Id")) {
+				IdentityRequest request = IdentityRequest.fromJSON(message);
+				handleRequest(request);
+			} else if (message.getString("op").equals("username")) {
+				server.releaseClient(session.getUserName());
+				session.setUserName(message.getString("name"));
+				server.registerClient(session.getUserName(), this);
+			}
 		}
 	}
 
 	private void handleRequest(Request request) {
 		// Associate a statevector with this request if it doesnt have one
+		if (request.getStateVector() == null) {
+			request.setStateVector(session.getCurrentState());
+		}
 		// Add this request to the queue
+		session.receiveRequest(request);
+		broadcastRequest(request);
+		// Broadcast this request out
 	}
 
 	@Override
-	public void onReceiveFailed(AsyncReadEvent e) { }
+	public void onReceiveFailed(AsyncReadEvent e) {
+	}
 
 	@Override
 	public void onReaderClosed(AsyncReadEvent e) {
@@ -147,6 +138,21 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	@Override
 	public void onProviderClosed() {
 		this.stop();
+	}
+
+	@Override
+	public void syncState(Session newSession) {
+		this.session = newSession;
+		JSONObject payload = new JSONObject();
+		try {
+			payload.put("op", "sync");
+			payload.put("text", session.getCurrentText());
+			payload.put("assignedName", session.getUserName());
+			connection.send(payload.toString(), this);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
