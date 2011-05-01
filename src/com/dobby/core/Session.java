@@ -9,8 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User;
-
 /**
  * 
  * @author anand
