@@ -93,7 +93,7 @@ public class SessionTest {
 		assertTrue(testSessionx.getCurrentText().equals("wxaby"));
 		
 		Request testRequest8 = new DeleteRequest("User2",
-				testRequest3.getStateVector().clone(), 7, 0, 'x');
+				testRequest6.getStateVector().incrementedUser("User2"), 7, 1, 'r');
 		testSessionx.receiveRequest(testRequest8);
 		testSessionx.executeRequest();
 		System.out.println(testSessionx.getCurrentText());

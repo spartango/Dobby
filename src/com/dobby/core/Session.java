@@ -125,16 +125,24 @@ public class Session implements Runnable {
 			StateVector decVec = state.decrementedUser(userToDec);
 			Request previousRequest = getRequest(userToDec,
 					decVec.getUser(userToDec));
-			Request translatedPrevReq = translateRequest(previousRequest,
-					decVec);
-			Request translatedThisReq = translateRequest(target, decVec);
-			Request transformedPrevReq = translatedPrevReq
-					.transform(translatedThisReq);
-			Request transformedThisReq = translatedThisReq
-					.transform(translatedPrevReq);
-			addToModel(transformedPrevReq);
-			addToModel(transformedThisReq);
-			return transformedThisReq;
+			if (previousRequest != null) {
+				Request translatedPrevReq = translateRequest(previousRequest,
+						decVec);
+				Request translatedThisReq = translateRequest(target, decVec);
+				Request transformedPrevReq = translatedPrevReq
+						.transform(translatedThisReq);
+				Request transformedThisReq = translatedThisReq
+						.transform(translatedPrevReq);
+				addToModel(transformedPrevReq);
+				addToModel(transformedThisReq);
+				return transformedThisReq;
+			} else {
+				// Prevents catastrophic failure in the case
+				// that we really dont have a good way to translate this.
+				System.err.println("Couldn't find a good way to translate "
+						+ target + " " + state);
+				return target;
+			}
 
 		}
 	}
