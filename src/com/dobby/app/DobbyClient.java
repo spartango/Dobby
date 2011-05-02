@@ -43,16 +43,17 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	public DobbyClient(DobbyServer server, AsyncSocket socket, String document) {
 		this.server = server;
 		connection = socket;
+		socket.addAsyncSocketListener(this);
 		registerClient();
 	}
 
 	private void registerClient() {
-		server.registerClient(session.getUserName(), this);
+		server.registerClient(connection.getInetAddress().toString(), this);
 	}
 
 	@Override
 	public void onWriteSuccess(AsyncWriteEvent e) {
-		/* Successful send */
+		System.out.println("Request Sent Successfully");
 	}
 
 	@Override
@@ -64,6 +65,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	public void onWriterClosed(AsyncWriteEvent e) { // Disconnected
 		// TODO try and reconnect
 		// Exit safely
+		System.out.println("Writer Closed");
 		stop();
 	}
 
@@ -143,6 +145,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	@Override
 	public void syncState(Session newSession) {
 		this.session = newSession;
+		System.out.println("Acquring new session: "+newSession);
 		JSONObject payload = new JSONObject();
 		try {
 			payload.put("op", "sync");
