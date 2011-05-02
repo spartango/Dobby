@@ -1,46 +1,79 @@
 <project name="Dobby" basedir=".">
-  
-  <target name="clean">
-    <delete dir="build"/>
-  </target>
-  
-  <target name="javadoc">
-      <javadoc
-               destdir="docs"
-               author="true"
-               version="true"
-               use="true"
-               windowtitle="DobbyDoc">
 
-        <packageset dir="src" defaultexcludes="yes">
-          <include name="com/**"/>
-          <exclude name="com/dobby/tests/**"/>
-        </packageset>
+    <target name="clean">
+        <delete dir="build" />
+    </target>
 
-        <doctitle><![CDATA[<h1>Dobby Javadoc</h1>]]></doctitle>
-        <bottom></bottom>
-        
-      </javadoc>
-  </target>
-  
-  <target name="compile">
-    <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes"/>
-  </target>
-  
-  <target name="jar" depends="compile">
-    <mkdir dir="build/jar"/>
+    <target name="javadoc">
+        <javadoc destdir="docs" author="true" version="true" use="true" windowtitle="DobbyDoc">
+
+            <packageset dir="src" defaultexcludes="yes">
+                <include name="com/**" />
+                <exclude name="com/dobby/tests/**" />
+            </packageset>
+
+            <doctitle>
+                <![CDATA[<h1>Dobby Javadoc</h1>]]></doctitle>
+        <bottom>
+        </bottom>
+
+    </javadoc>
+</target>
+
+<target name="compile">
+    <mkdir dir="build/classes" />
+    <javac srcdir="src" destdir="build/classes" />
+</target>
+
+<target name="jar" depends="compile">
+    <mkdir dir="build/jar" />
     <jar destfile="build/jar/Dobby.jar" basedir="build/classes">
     </jar>
-  </target>
-  
-  <target name="help">
+</target>
+
+<target name="jardemo" depends="compile">
+    <mkdir dir="build/jar" />
+    <jar destfile="build/jar/DobbyDemo.jar" basedir="build/classes">
+        <manifest>
+            <attribute name="Main-Class" value="com.dobby.demo.DemoApplication" />
+        </manifest>
+    </jar>
+</target>
+
+<target name="jarserver" depends="compile">
+    <mkdir dir="build/jar" />
+    <jar destfile="build/jar/DobbyServer.jar" basedir="build/classes">
+        <manifest>
+            <attribute name="Main-Class" value="com.dobby.server.ServerApplication" />
+        </manifest>
+    </jar>
+</target>
+
+<target name="runserver" depends="jarserver">
+    <java classname="com.dobby.server.ServerApplication" fork="true">
+        <classpath>
+            <path refid="classpath" />
+            <path location="build/jar/DobbyServer.jar" />
+        </classpath>
+    </java>
+</target>
+
+<target name="demo" depends="jardemo">
+    <java classname="com.dobby.server.ServerApplication" fork="true">
+        <classpath>
+            <path refid="classpath" />
+            <path location="build/jar/DobbyDemo.jar" />
+        </classpath>
+    </java>
+</target>
+
+<target name="help">
     <echo> - Dobby Build Commands - ${line.separator}</echo>
     <echo>help: Get this list ${line.separator}</echo>
-    <echo>compile: Compile the project ${line.separator}</echo> 
+    <echo>compile: Compile the project ${line.separator}</echo>
     <echo>clean: clear the compiled class files ${line.separator}</echo>
     <echo>jar: create a jar with the compiled classes ${line.separator} </echo>
     <echo>javadoc: generate a javadoc for this project</echo>
-  </target>
-  
+</target>
+
 </project>

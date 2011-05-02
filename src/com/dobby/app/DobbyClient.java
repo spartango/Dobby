@@ -2,10 +2,6 @@ package com.dobby.app;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +9,6 @@ import org.json.JSONObject;
 import com.dobby.app.comm.BroadcastListener;
 import com.dobby.core.Request;
 import com.dobby.core.Session;
-import com.dobby.core.StateVector;
 import com.dobby.core.requests.DeleteRequest;
 import com.dobby.core.requests.IdentityRequest;
 import com.dobby.core.requests.InsertRequest;
