@@ -22,7 +22,7 @@
 
 <target name="compile">
     <mkdir dir="build/classes" />
-    <javac srcdir="src" destdir="build/classes" classpath="lib/*.jar"/>
+    <javac srcdir="src" destdir="build/classes" classpath="lib/jsyntaxpane-0.9.6.jar"/>
 </target>
 
 <target name="jar" depends="compile">
@@ -60,7 +60,7 @@
 <target name="demo" depends="jardemo">
     <java classname="com.dobby.client.DemoApplication" fork="true">
         <classpath>
-            <path location="lib/jsyntaxpane-0.9.5-b29.jar" />
+            <path location="lib/jsyntaxpane-0.9.6.jar" />
             <path location="build/jar/DobbyDemo.jar" />
         </classpath>
     </java>

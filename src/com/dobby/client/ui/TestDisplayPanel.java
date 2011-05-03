@@ -1,6 +1,5 @@
 package com.dobby.client.ui;
 
-import java.awt.Font;
 import java.awt.Rectangle;
 
 import javax.swing.JEditorPane;
@@ -9,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 
 import jsyntaxpane.DefaultSyntaxKit;
+import jsyntaxpane.syntaxkits.JavaSyntaxKit;
 
 public class TestDisplayPanel extends JPanel {
 
@@ -31,7 +31,7 @@ public class TestDisplayPanel extends JPanel {
 	private void initialize() {
 		this.setSize(500, 700);
 		this.setLayout(null);
-        DefaultSyntaxKit.initKit();
+		JavaSyntaxKit syntaxkit = new JavaSyntaxKit();
 		JScrollPane scrPane = new JScrollPane(getJEditorPane());
 		scrPane.setSize(500, 700);
 		this.add(scrPane);

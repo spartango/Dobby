@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="classes" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/Users/anand/Developer/Dobby/lib/jsyntaxpane-0.9.5-b29.jar"/>
 	<classpathentry kind="lib" path="/Users/anand/Developer/Dobby/lib/junit-4.9b2.jar"/>
+	<classpathentry kind="lib" path="/Users/anand/Developer/Dobby/lib/jsyntaxpane-0.9.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
