@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.text.Document;
+import java.awt.Font;
 
 public class TestDisplayPanel extends JPanel {
 
@@ -40,6 +41,7 @@ public class TestDisplayPanel extends JPanel {
 		if (jEditorPane == null) {
 			jEditorPane = new JEditorPane();
 			jEditorPane.setBounds(new Rectangle(5, 5, 490, 690));
+			jEditorPane.setFont(new Font("Courier New", Font.PLAIN, 13));
 		}
 		return jEditorPane;
 	}
