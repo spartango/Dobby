@@ -97,6 +97,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 				IdentityRequest request = IdentityRequest.fromJSON(message);
 				handleRequest(request);
 			} else if (message.getString("op").equals("username")) {
+				session.removeChangeListener(this);
 				server.releaseClient(session.getUserName());
 				session.setUserName(message.getString("name"));
 				server.registerClient(session.getUserName(), this);
@@ -141,6 +142,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	@Override
 	public void syncState(Session newSession) {
 		this.session = newSession;
+		session.addChangeListener(this);
 		System.out.println("Acquring new session: "+newSession);
 		JSONObject payload = new JSONObject();
 		try {

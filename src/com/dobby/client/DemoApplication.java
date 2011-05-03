@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.dobby.client.ui.TestDisplayPanel;
 import com.dobby.core.requests.DeleteRequest;
 import com.dobby.core.requests.InsertRequest;
+import com.dobby.server.ServerApplication;
 import com.spartango.io.AsyncReadEvent;
 import com.spartango.io.AsyncReadListener;
 import com.spartango.io.AsyncWriteEvent;
@@ -33,19 +34,16 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 	public DemoApplication(String host, int port) {
 		try {
 			// Make a new socket, and connect it.
+			// Make a new panel
+			panel = new TestDisplayPanel();
+			frame = new JFrame("Dobby");
 			connection = new AsyncSocket(host, port);
 			// Register this as listener
 			connection.addAsyncSocketListener(this);
-			// Make a new panel
-			TestDisplayPanel panel = new TestDisplayPanel();
-			frame = new JFrame("Dobby");
-			init();
-
 			// Get the document and register this as listener
 			document = panel.getDocument();
 			document.addDocumentListener(this);
 			username = null;
-
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -60,6 +58,7 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
+		
 		// Chop into pieces
 		// Generate event
 		// Send event over socket
@@ -99,6 +98,7 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 				if (op.equals("sync")) {
 					username = obj.getString("assignedName");
 					System.out.println("Assigned " + username);
+					frame.setTitle("Dobby: " + username);
 					// Set document text
 					String text = obj.getString("text");
 					panel.getjEditorPane().setText(text);
@@ -144,16 +144,23 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 
 	public void init() {
 		// Make a JFrame to house the panel
+		frame.add(panel);
+		frame.setSize(500, 720);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Add the Panel
 		// Set JFrame props
 		// Make JFrame Visible
+		frame.setVisible(true);
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		System.setProperty("apple.awt.brushMetalLook", "true");
+		DemoApplication demo = new DemoApplication("127.0.0.1",
+				ServerApplication.DEFAULT_PORT);
+		demo.init();
 	}
 
 }

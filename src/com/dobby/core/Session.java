@@ -95,6 +95,9 @@ public class Session implements Runnable, Cloneable {
 
 	private void applyRequestToText(Request translated) {
 		docText = translated.apply(docText);
+		for(ChangeListener l : listeners){
+			l.onRequestApplied(translated);
+		}
 	}
 
 	/**
@@ -368,7 +371,7 @@ public class Session implements Runnable, Cloneable {
 		listeners.add(listener);
 	}
 
-	public void removesChangeListener(ChangeListener listener) {
+	public void removeChangeListener(ChangeListener listener) {
 		listeners.remove(listener);
 	}
 }
