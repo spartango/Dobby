@@ -29,9 +29,7 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 	private Document document;
 	private String username;
 
-	private String assignedUsername;
-
-	public DemoApplication(String host, int port, String username) {
+	public DemoApplication(String host, int port) {
 		try {
 			// Make a new socket, and connect it.
 			connection = new AsyncSocket(host, port);
@@ -39,13 +37,13 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 			connection.addAsyncSocketListener(this);
 			// Make a new panel
 			TestDisplayPanel panel = new TestDisplayPanel();
+			frame = new JFrame("Dobby");
 			init();
 
 			// Get the document and register this as listener
 			document = panel.getDocument();
 			document.addDocumentListener(this);
-			this.username = username;
-			assignedUsername = null;
+			username = null;
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -95,23 +93,17 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 		// Parse Request from JSON
 		try {
 			JSONObject obj = new JSONObject(e.getData());
-			if(obj.has("op")){
+			if (obj.has("op")) {
 				String op = obj.getString("op");
-				if(op.equals("sync")){
-					assignedUsername = obj.getString("assignedName");
-					//Try and set our username here
-					setRemoteUsername(username);
-				} //else if()
+				if (op.equals("sync")) {
+					username = obj.getString("assignedName");
+					System.out.println("Assigned " + username);
+				} // else if()
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
 		// handle Request
-	}
-
-	private void setRemoteUsername(String target) {
-		//Make a json object for username
-		//Send it along
 	}
 
 	private void handleInsertRequest(InsertRequest r) {

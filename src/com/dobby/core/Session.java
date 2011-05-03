@@ -29,11 +29,21 @@ public class Session implements Runnable, Cloneable {
 	private String docText;
 
 	/**
-	 * Creates a new editing session for a document
 	 * 
+	 * @param user
 	 * @param docName
 	 */
 	public Session(String user, String docName) {
+		this(user, docName, true);
+	}
+
+	/**
+	 * 
+	 * @param user
+	 * @param docName
+	 * @param start
+	 */
+	public Session(String user, String docName, boolean start) {
 		this.requestQueue = new LinkedList<Request>();
 		this.requestLog = new HashMap<String, List<Request>>();
 		this.docMod = new HashSet<Request>();
@@ -43,7 +53,8 @@ public class Session implements Runnable, Cloneable {
 		this.docText = "";
 		running = false;
 		sessionThread = new Thread(this);
-		start();
+		if (start)
+			start();
 	}
 
 	public void start() {

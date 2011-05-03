@@ -43,7 +43,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	private void registerClient() {
-		server.registerClient(connection.getInetAddress().toString(), this);
+		server.registerClient(connection.hashCode()+"", this);
 	}
 
 	@Override
