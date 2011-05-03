@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import org.json.JSONException;
@@ -98,7 +99,16 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 				if (op.equals("sync")) {
 					username = obj.getString("assignedName");
 					System.out.println("Assigned " + username);
-				} // else if()
+					// Set document text
+					String text = obj.getString("text");
+					panel.getjEditorPane().setText(text);
+				} else if (op.equals("Ins")) {
+					InsertRequest request = InsertRequest.fromJSON(obj);
+					handleInsertRequest(request);
+				} else if (op.equals("Del")) {
+					DeleteRequest request = DeleteRequest.fromJSON(obj);
+					handleDeleteRequest(request);
+				}
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
@@ -108,10 +118,20 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 
 	private void handleInsertRequest(InsertRequest r) {
 		// call Document's insert function with our contents
+		try {
+			document.insertString(r.getPosition(), r.getCharacter() + "", null);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void handleDeleteRequest(DeleteRequest r) {
 		// call Document's remove function with our contents
+		try {
+			document.remove(r.getPosition(), 1);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -48,6 +48,11 @@ public class TestDisplayPanel extends JPanel {
 		return jEditorPane.getDocument();
 	}
 
+	public JEditorPane getjEditorPane() {
+		return jEditorPane;
+	}
+
+	
 	
 	
 }

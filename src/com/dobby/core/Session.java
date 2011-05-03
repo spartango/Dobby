@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
@@ -25,6 +24,8 @@ public class Session implements Runnable, Cloneable {
 	private HashSet<Request> docMod;
 	private String docName;
 	private String userName;
+
+	private Vector<ChangeListener> listeners;
 
 	private String docText;
 
@@ -52,6 +53,7 @@ public class Session implements Runnable, Cloneable {
 		this.userName = user;
 		this.docText = "";
 		running = false;
+		listeners = new Vector<ChangeListener>();
 		sessionThread = new Thread(this);
 		if (start)
 			start();
@@ -91,7 +93,7 @@ public class Session implements Runnable, Cloneable {
 		}
 	}
 
-	private synchronized void applyRequestToText(Request translated) {
+	private void applyRequestToText(Request translated) {
 		docText = translated.apply(docText);
 	}
 
@@ -100,7 +102,7 @@ public class Session implements Runnable, Cloneable {
 	 * 
 	 * @return
 	 */
-	public synchronized boolean isRequestQueueEmpty() {
+	public boolean isRequestQueueEmpty() {
 		return requestQueue.isEmpty();
 	}
 
@@ -164,7 +166,7 @@ public class Session implements Runnable, Cloneable {
 		}
 	}
 
-	private synchronized void addToModel(Request r) {
+	private void addToModel(Request r) {
 		docMod.add(r);
 	}
 
@@ -276,7 +278,7 @@ public class Session implements Runnable, Cloneable {
 	 * 
 	 * @param r
 	 */
-	private synchronized void putRequestInLog(Request r) {
+	private void putRequestInLog(Request r) {
 		if (requestLog.containsKey(r.user)) {
 			List<Request> userLog = requestLog.get(r.user);
 			userLog.add(r);
@@ -360,5 +362,13 @@ public class Session implements Runnable, Cloneable {
 		newSession.requestQueue = cloneQueue;
 		newSession.currentState = currentState.clone();
 		return newSession;
+	}
+
+	public void addChangeListener(ChangeListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removesChangeListener(ChangeListener listener) {
+		listeners.remove(listener);
 	}
 }

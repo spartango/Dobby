@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.dobby.app.comm.BroadcastListener;
+import com.dobby.core.ChangeListener;
 import com.dobby.core.Request;
 import com.dobby.core.Session;
 import com.dobby.core.requests.DeleteRequest;
@@ -24,7 +25,7 @@ import com.spartango.network.AsyncSocket;
  * 
  */
 public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
-		BroadcastListener {
+		BroadcastListener, ChangeListener {
 	private DobbyServer server;
 
 	private Session session;
@@ -151,6 +152,12 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void onRequestApplied(Request r) {
+		String data = r.toJSON().toString();
+		connection.send(data, this);
 	}
 
 }
