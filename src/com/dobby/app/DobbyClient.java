@@ -49,7 +49,6 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 
 	@Override
 	public void onWriteSuccess(AsyncWriteEvent e) {
-		System.out.println("Request Sent Successfully");
 	}
 
 	@Override

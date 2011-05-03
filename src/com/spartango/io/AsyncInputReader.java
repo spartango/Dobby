@@ -47,7 +47,8 @@ public class AsyncInputReader implements Runnable {
 	private synchronized void executeReceive() {
 		try {
 			String data = input.readLine();
-			notifyNewData(data);
+			if (data != null)
+				notifyNewData(data);
 		} catch (IOException e) {
 			notifyReadFailure(e);
 		}
@@ -63,9 +64,9 @@ public class AsyncInputReader implements Runnable {
 	}
 
 	private void notifyNewData(String data) {
-		//Create an immutable event 
-		AsyncReadEvent event =  new AsyncReadEvent(this,
-				AsyncReadEvent.SUCCESS, data, null);
+		// Create an immutable event
+		AsyncReadEvent event = new AsyncReadEvent(this, AsyncReadEvent.SUCCESS,
+				data, null);
 		for (AsyncReadListener listener : listeners) {
 			listener.onDataReceived(event);
 		}

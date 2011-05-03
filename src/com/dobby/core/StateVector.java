@@ -1,9 +1,11 @@
 package com.dobby.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StateVector implements Cloneable {
@@ -209,8 +211,17 @@ public class StateVector implements Cloneable {
 	}
 
 	public static StateVector fromJSON(JSONObject jsonObject) {
-		// TODO Auto-generated method stub
-		return null;
+		Iterator<String> iter = jsonObject.keys();
+		StateVector result = new StateVector();
+		while (iter.hasNext()) {
+			String key = iter.next();
+			try {
+				result.put(key, jsonObject.getInt(key));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 	public boolean greaterThan(StateVector beta) {

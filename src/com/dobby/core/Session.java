@@ -95,7 +95,7 @@ public class Session implements Runnable, Cloneable {
 
 	private void applyRequestToText(Request translated) {
 		docText = translated.apply(docText);
-		for(ChangeListener l : listeners){
+		for (ChangeListener l : listeners) {
 			l.onRequestApplied(translated);
 		}
 	}

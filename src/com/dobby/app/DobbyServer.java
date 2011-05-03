@@ -11,7 +11,7 @@ import com.spartango.network.AsyncServerEvent;
 import com.spartango.network.AsyncServerListener;
 import com.spartango.network.AsyncServerSocket;
 
-public class DobbyServer implements AsyncServerListener {
+public class DobbyServer implements AsyncServerListener, BroadcastListener{
 
 	private AsyncServerSocket server;
 	private Session serverSession;
@@ -23,6 +23,7 @@ public class DobbyServer implements AsyncServerListener {
 			server = new AsyncServerSocket(port);
 			server.add(this);
 			listeners = new HashMap<String, BroadcastListener>();
+			listeners.put("Server", this);
 			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,7 +58,6 @@ public class DobbyServer implements AsyncServerListener {
 
 	public synchronized void registerClient(String userName,
 			BroadcastListener client) {
-		System.out.println("Registering and syncing client " + userName);
 		listeners.put(userName, client);
 		Session newSession = serverSession.clone();
 		newSession.setUserName(userName);
@@ -69,12 +69,8 @@ public class DobbyServer implements AsyncServerListener {
 	}
 
 	public synchronized void broadcastRequest(Request r) {
-		// TODO parallelize sending broadcasts
-		serverSession.receiveRequest(r);
 		for (String listener : listeners.keySet()) {
 			if (!r.getUser().equals(listener)) {
-				System.out.println("Broadcast from " + r.getUser() + " to "
-						+ listener);
 				listeners.get(listener).onBroadcastReceived(r);
 			}
 		}
@@ -83,4 +79,15 @@ public class DobbyServer implements AsyncServerListener {
 	public boolean isOpen() {
 		return server.isAccepting();
 	}
+
+	@Override
+	public void syncState(Session newSession) {}
+
+	@Override
+	public void onBroadcastReceived(Request r) {
+		serverSession.receiveRequest(r);		
+	}
+
+	@Override
+	public void onProviderClosed() {}
 }

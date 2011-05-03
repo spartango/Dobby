@@ -1,11 +1,14 @@
 package com.dobby.client.ui;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.text.Document;
-import java.awt.Font;
+
+import jsyntaxpane.DefaultSyntaxKit;
 
 public class TestDisplayPanel extends JPanel {
 
@@ -26,10 +29,14 @@ public class TestDisplayPanel extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
-
 		this.setSize(500, 700);
 		this.setLayout(null);
-		this.add(getJEditorPane());
+        DefaultSyntaxKit.initKit();
+		JScrollPane scrPane = new JScrollPane(getJEditorPane());
+		scrPane.setSize(500, 700);
+		this.add(scrPane);
+		jEditorPane.setContentType("text/java");
+
 	}
 
 	/**
@@ -41,7 +48,6 @@ public class TestDisplayPanel extends JPanel {
 		if (jEditorPane == null) {
 			jEditorPane = new JEditorPane();
 			jEditorPane.setBounds(new Rectangle(5, 5, 490, 690));
-			jEditorPane.setFont(new Font("Courier New", Font.PLAIN, 13));
 		}
 		return jEditorPane;
 	}
