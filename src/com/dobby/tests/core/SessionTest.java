@@ -43,7 +43,7 @@ public class SessionTest {
 
 	@Test
 	public void testTranslateRequest() {
-		Session testSessionx = new Session("User1", "TestDoc");
+		Session testSessionx = new Session("User1", "TestDoc", false);
 		StateVector testVectors = new StateVector();
 		testSessionx.setCurrentState(testVectors);
 		Request testRequest = new InsertRequest("User1", testVectors, 0, 0, 'x');
