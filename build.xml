@@ -59,7 +59,7 @@
 </target>
 
 <target name="demo" depends="jardemo">
-    <java classname="com.dobby.server.ServerApplication" fork="true">
+    <java classname="com.dobby.client.DemoApplication" fork="true">
         <classpath>
             <path refid="classpath" />
             <path location="build/jar/DobbyDemo.jar" />
