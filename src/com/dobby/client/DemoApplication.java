@@ -123,7 +123,13 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 					frame.setTitle("Dobby: " + username);
 					// Set document text
 					String text = obj.getString("text");
-					panel.getjEditorPane().setText(text);
+					try {
+						document.removeDocumentListener(this);
+						document.insertString(0, text, null);
+						document.addDocumentListener(this);
+					} catch (BadLocationException e1) {
+						e1.printStackTrace();
+					}
 				} else if (op.equals("Ins")) {
 					InsertRequest request = InsertRequest.fromJSON(obj);
 					handleInsertRequest(request);
@@ -141,7 +147,9 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 	private void handleInsertRequest(InsertRequest r) {
 		// call Document's insert function with our contents
 		try {
+			document.removeDocumentListener(this);
 			document.insertString(r.getPosition(), r.getCharacter() + "", null);
+			document.addDocumentListener(this);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -150,7 +158,9 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 	private void handleDeleteRequest(DeleteRequest r) {
 		// call Document's remove function with our contents
 		try {
+			document.removeDocumentListener(this);
 			document.remove(r.getPosition(), 1);
+			document.addDocumentListener(this);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}

@@ -70,9 +70,11 @@ public class DobbyServer implements AsyncServerListener {
 
 	public synchronized void broadcastRequest(Request r) {
 		// TODO parallelize sending broadcasts
+		serverSession.receiveRequest(r);
 		for (String listener : listeners.keySet()) {
 			if (!r.getUser().equals(listener)) {
-				System.out.println("Broadcast from "+r.getUser()+" to "+listener);
+				System.out.println("Broadcast from " + r.getUser() + " to "
+						+ listener);
 				listeners.get(listener).onBroadcastReceived(r);
 			}
 		}
