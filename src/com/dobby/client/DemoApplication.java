@@ -58,17 +58,39 @@ public class DemoApplication implements DocumentListener, AsyncReadListener,
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-		
-		// Chop into pieces
-		// Generate event
-		// Send event over socket
+		int startPos = e.getOffset();
+		int items = e.getLength();
+		for (int i = 0; i < items; i++) {
+			try {
+				char text = document.getText(startPos + i, 1).charAt(0);
+				InsertRequest request = new InsertRequest(username, null,
+						document.hashCode(), startPos + i, text);
+				sendInsertRequest(request);
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
+
+		}
+	}
+
+	private void sendInsertRequest(InsertRequest request) {
+		connection.send(request.toLightJSON().toString(), this);
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
-		// Chop into pieces
-		// Generate event
-		// Send event over socket
+		int startPos = e.getOffset();
+		int items = e.getLength();
+		for (int i = 0; i < items; i++) {
+			char text = (char) 0;
+			DeleteRequest request = new DeleteRequest(username, null,
+					document.hashCode(), startPos + i, text);
+			sendDeleteRequest(request);
+		}
+	}
+
+	private void sendDeleteRequest(DeleteRequest request) {
+		connection.send(request.toLightJSON().toString(), this);
 	}
 
 	@Override

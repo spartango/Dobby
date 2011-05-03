@@ -71,8 +71,8 @@ public class IdentityRequest extends Request {
 		StateVector state = null;
 		int serial = -1;
 
-		if (obj.has("user")) {
-			userName = obj.getString(userName);
+		if (obj.has("username")) {
+			userName = obj.getString("username");
 		}
 		if (obj.has("serial")) {
 			serial = obj.getInt("serial");

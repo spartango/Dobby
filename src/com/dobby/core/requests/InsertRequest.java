@@ -96,7 +96,7 @@ public class InsertRequest extends Request {
 	protected void populateJSON(JSONObject obj) {
 		try {
 			obj.put("op", "Ins");
-			obj.put("char", this.character);
+			obj.put("char", this.character + "");
 			obj.put("pos", this.position);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -112,8 +112,8 @@ public class InsertRequest extends Request {
 		StateVector state = null;
 		int serial = -1;
 
-		if (obj.has("user")) {
-			userName = obj.getString(userName);
+		if (obj.has("username")) {
+			userName = obj.getString("username");
 		}
 		if (obj.has("char")) {
 			charName = obj.getString("char").charAt(0);
@@ -127,7 +127,7 @@ public class InsertRequest extends Request {
 		if (obj.has("state")) {
 			state = StateVector.fromJSON(obj.getJSONObject("state"));
 		}
-		
+
 		request = new InsertRequest(userName, state, serial, pos, charName);
 		return request;
 	}

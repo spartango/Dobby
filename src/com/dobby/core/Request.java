@@ -102,7 +102,7 @@ public abstract class Request implements Cloneable {
 	public JSONObject toLightJSON() {
 		JSONObject obj = new JSONObject();
 		try {
-			obj.put("user", user);
+			obj.put("username", user);
 			obj.put("serial", serialNumber);
 			populateJSON(obj);
 		} catch (JSONException e) {

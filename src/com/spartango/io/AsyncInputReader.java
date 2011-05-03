@@ -47,7 +47,6 @@ public class AsyncInputReader implements Runnable {
 	private synchronized void executeReceive() {
 		try {
 			String data = input.readLine();
-			System.out.println("New data");
 			notifyNewData(data);
 		} catch (IOException e) {
 			notifyReadFailure(e);

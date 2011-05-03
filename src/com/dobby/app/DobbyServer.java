@@ -57,7 +57,7 @@ public class DobbyServer implements AsyncServerListener {
 
 	public synchronized void registerClient(String userName,
 			BroadcastListener client) {
-		System.out.println("Registering and syncing client");
+		System.out.println("Registering and syncing client "+userName);
 		listeners.put(userName, client);
 		Session newSession = serverSession.clone();
 		newSession.setUserName(userName);

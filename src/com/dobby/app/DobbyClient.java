@@ -158,7 +158,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 
 	@Override
 	public void onRequestApplied(Request r) {
-		String data = r.toJSON().toString();
+		String data = r.toLightJSON().toString();
 		connection.send(data, this);
 	}
 
