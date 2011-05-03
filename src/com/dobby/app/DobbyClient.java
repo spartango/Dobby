@@ -44,7 +44,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	}
 
 	private void registerClient() {
-		server.registerClient(connection.hashCode()+"", this);
+		server.registerClient(connection.hashCode() + "", this);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	public void syncState(Session newSession) {
 		this.session = newSession;
 		session.addChangeListener(this);
-		System.out.println("Acquring new session: "+newSession);
+		System.out.println("Acquring new session: " + newSession);
 		JSONObject payload = new JSONObject();
 		try {
 			payload.put("op", "sync");
@@ -159,7 +159,8 @@ public class DobbyClient implements AsyncReadListener, AsyncWriteSender,
 	@Override
 	public void onRequestApplied(Request r) {
 		String data = r.toLightJSON().toString();
-		connection.send(data, this);
+		if (!r.getUser().equals(session.getUserName()))
+			connection.send(data, this);
 	}
 
 }

@@ -57,7 +57,7 @@ public class DobbyServer implements AsyncServerListener {
 
 	public synchronized void registerClient(String userName,
 			BroadcastListener client) {
-		System.out.println("Registering and syncing client "+userName);
+		System.out.println("Registering and syncing client " + userName);
 		listeners.put(userName, client);
 		Session newSession = serverSession.clone();
 		newSession.setUserName(userName);
@@ -72,6 +72,7 @@ public class DobbyServer implements AsyncServerListener {
 		// TODO parallelize sending broadcasts
 		for (String listener : listeners.keySet()) {
 			if (!r.getUser().equals(listener)) {
+				System.out.println("Broadcast from "+r.getUser()+" to "+listener);
 				listeners.get(listener).onBroadcastReceived(r);
 			}
 		}
