@@ -7,4 +7,4 @@ Dobby is a collaborative text editor with syntax highlighting.
 
 It's built on the adOPTed algorithm, laid out in [Ressel et al. 1996](http://dl.acm.org/citation.cfm?id=240305) and [Ressel et al. 1999](http://dl.acm.org/citation.cfm?doid=320297.320312).
 
-Dobby was built by a handful of freshman at Harvard University in 2011. 
+Dobby was built by a handful of freshmen at Harvard University in 2011. 
